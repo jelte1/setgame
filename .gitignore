@@ -3,3 +3,5 @@
 /backend/obj
 /frontend/.angular
 /frontend/.vscode
+.idea
+.git
