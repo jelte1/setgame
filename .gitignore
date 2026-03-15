@@ -1,0 +1,5 @@
+/backend/bin
+/backend/.idea
+/backend/obj
+/frontend/.angular
+/frontend/.vscode

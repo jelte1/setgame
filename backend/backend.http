@@ -1,0 +1,23 @@
+GET {{backend_HostAddress}}/api/Cards/
+Accept: application/json
+
+###
+
+GET {{backend_HostAddress}}/api/Cards/5
+Accept: application/json
+
+###
+
+POST {{backend_HostAddress}}/api/Cards/
+Content-Type: application/json
+
+{
+  "Shape": 1,
+  "Color": 1,
+  "Filling": 1,
+  "Amount": 1
+}
+
+###
+
+DELETE {{backend_HostAddress}}/api/Cards/83
