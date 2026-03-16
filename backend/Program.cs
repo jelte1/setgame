@@ -1,7 +1,9 @@
 using backend.Contracts;
 using backend.Database;
+using backend.Entities;
 using backend.MappingProfiles;
 using backend.Repositories;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +12,10 @@ var conString = builder.Configuration.GetConnectionString("DbCon");
 builder.Services.AddDbContext<SetGameDbContext>(options =>
     options.UseMySql(conString, ServerVersion.AutoDetect(conString)));
 
-// builder.Services.AddOpenApi();
+builder.Services.AddIdentityCore<User>()
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<SetGameDbContext>();
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

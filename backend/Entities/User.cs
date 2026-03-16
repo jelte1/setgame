@@ -1,12 +1,8 @@
-﻿namespace backend.Entities;
+﻿using Microsoft.AspNetCore.Identity;
 
-public class User
+namespace backend.Entities;
+
+public class User : IdentityUser
 {
-    public int Id { get; set; }
-    
-    public required string Name { get; set; }
-    
-    public required string PasswordHash { get; set; }
-    
     public virtual ICollection<Game> Games { get; set; }
 }

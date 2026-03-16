@@ -1,15 +1,16 @@
 using backend.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Database;
 
-public class SetGameDbContext: DbContext
+public class SetGameDbContext : IdentityDbContext<User>
 {
     public DbSet<Entities.Board> Boards { get; set; }
     public DbSet<Entities.Card> Cards { get; set; }
     public DbSet<Entities.Game> Games { get; set; }
     public DbSet<Entities.Set> Sets { get; set; }
-    public DbSet<Entities.User> Users { get; set; }
+    // public DbSet<Entities.User> Users { get; set; }
     
     public SetGameDbContext(DbContextOptions options) : base(options)
     {
