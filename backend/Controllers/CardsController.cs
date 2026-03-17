@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using backend.Dtos.Card;
 using backend.Entities;
 using backend.Repositories;
+using Microsoft.AspNetCore.Authorization;
 
 namespace backend.Controllers
 {
@@ -48,14 +49,15 @@ namespace backend.Controllers
 
             return Ok(_mapper.Map<GetCardDto>(card));
         }
-        
+
 
         // POST: api/Card
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Card>> PostCard(CreateCardDto createCard)
         {
             var card = _mapper.Map<Card>(createCard);
-            
+
             await _cardsRepository.AddAsync(card);
 
             return CreatedAtAction("GetCard", new { id = card.Id }, card);
@@ -63,6 +65,7 @@ namespace backend.Controllers
 
         // DELETE: api/Card/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteCard(int id)
         {
             var card = await _cardsRepository.GetAsync(id);

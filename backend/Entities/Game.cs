@@ -12,7 +12,7 @@ public class Game
     
     public required Board Board { get; set; }
     
-    public virtual ICollection<Card> CardsInBacklog { get; set; }
+    public virtual Board BacklogBoard { get; set; }
     
     public ICollection<Set> FoundSets { get; set; }
     
