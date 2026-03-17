@@ -54,5 +54,22 @@ namespace backend.Controllers
 
             return Ok(authResponse);
         }
+        
+        // POST: api/User/refreshtoken
+        [HttpPost("refreshtoken")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> RefreshToken([FromBody] AuthResponseDto requestDto)
+        {
+            var authResponse = await _authManager.VerifyRefreshToken(requestDto);
+
+            if (authResponse == null)
+            {
+                return Unauthorized();
+            }
+
+            return Ok(authResponse);
+        }
     }
 }

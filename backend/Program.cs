@@ -17,6 +17,8 @@ builder.Services.AddDbContext<SetGameDbContext>(options =>
 
 builder.Services.AddIdentityCore<User>()
     .AddRoles<IdentityRole>()
+    .AddTokenProvider<DataProtectorTokenProvider<User>>("setgameApi")
+    .AddDefaultTokenProviders()
     .AddEntityFrameworkStores<SetGameDbContext>();
 
 builder.Services.AddControllers();

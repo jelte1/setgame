@@ -1,8 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace backend.Dtos.User;
 
 public class AuthResponseDto
 {
-    public string UserId { get; set; }
-    
-    public string Token { get; set; }
+    public required string UserId { get; set; }
+    public required string Token { get; set; }
+    public required string RefreshToken { get; set; }
 }

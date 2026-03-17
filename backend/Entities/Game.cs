@@ -14,7 +14,7 @@ public class Game
     
     public virtual Board BacklogBoard { get; set; }
     
-    public ICollection<Set> FoundSets { get; set; }
+    public ICollection<Set> FoundSets { get; set; } = new List<Set>();
     
     public bool IsFinished { get; set; }
 }

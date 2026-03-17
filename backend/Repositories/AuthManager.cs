@@ -16,7 +16,7 @@ public class AuthManager : IAuthManager
     private readonly IMapper _mapper;
     private readonly UserManager<User> _userManager;
     private readonly IConfiguration _configuration;
-    private User _user;
+    private User? _user;
 
     private const string _providerName = "setgameApi";
     private const string _refreshTokenName = "RefreshToken";
@@ -35,7 +35,7 @@ public class AuthManager : IAuthManager
 
         if (result.Succeeded)
         {
-            _userManager.AddToRoleAsync(_user, "User");
+            await _userManager.AddToRoleAsync(_user, "User");
         }
 
         return result.Errors;
@@ -56,13 +56,14 @@ public class AuthManager : IAuthManager
         return new AuthResponseDto
         {
             Token = token,
-            UserId = _user.Id
+            UserId = _user.Id,
+            RefreshToken = await CreateRefreshToken()
         };
     }
 
     public async Task<string> CreateRefreshToken()
     {
-        await _userManager.RemoveAuthenticationTokenAsync(_user, _providerName, "RefreshToken");
+        await _userManager.RemoveAuthenticationTokenAsync(_user, _providerName, _refreshTokenName);
 
         var newToken = await _userManager.GenerateUserTokenAsync(_user, _providerName, _refreshTokenName);
         var result = await _userManager.SetAuthenticationTokenAsync(_user, _providerName, _refreshTokenName, newToken);
@@ -83,26 +84,27 @@ public class AuthManager : IAuthManager
 
         _user = await _userManager.FindByNameAsync(userName);
 
-        if (_user == null)
+        if (_user == null || _user.Id != request.UserId)
         {
             return null;
         }
 
-        var refreshToken = await _userManager.VerifyUserTokenAsync(_user, _providerName, _refreshTokenName, request.RefreshToken);
+        var isValidRefreshToken = await _userManager.VerifyUserTokenAsync(_user, _providerName, _refreshTokenName, request.RefreshToken);
 
-        if (refreshToken != request.Token)
+        if (isValidRefreshToken)
         {
-            return null;
+            var token = await GenerateJwtToken();
+            return new AuthResponseDto
+            {
+                Token = token,
+                UserId = _user.Id,
+                RefreshToken = await CreateRefreshToken()
+            };
         }
 
-        var newJwtToken = await GenerateJwtToken();
-        var response = new AuthResponseDto
-        {
-            Token = newJwtToken,
-            UserId = _user.Id
-        };
-
-        return response;
+        await _userManager.UpdateSecurityStampAsync(_user);
+        
+        return null;
     }
 
     private async Task<string> GenerateJwtToken()
