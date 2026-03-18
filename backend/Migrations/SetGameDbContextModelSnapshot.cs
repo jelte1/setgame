@@ -50,7 +50,7 @@ namespace backend.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "35be9970-3745-417f-bd68-087c7c4b838f",
+                            Id = "368b9499-beaf-4856-96c7-9bbd07414abf",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -921,7 +921,7 @@ namespace backend.Migrations
 
                     b.HasIndex("GameId");
 
-                    b.ToTable("GameState");
+                    b.ToTable("GameStates");
                 });
 
             modelBuilder.Entity("backend.Entities.User", b =>
