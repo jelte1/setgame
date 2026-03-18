@@ -2,7 +2,7 @@
 
 namespace backend.Entities;
 
-public enum Shape { Oval, Diamond, Striped }
+public enum Shape { Oval, Diamond, Squiggle }
 
 public enum Color { Red, Purple, Green }
 
