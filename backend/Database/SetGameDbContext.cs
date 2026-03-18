@@ -7,7 +7,6 @@ namespace backend.Database;
 
 public class SetGameDbContext : IdentityDbContext<User>
 {
-    // public DbSet<Entities.Board> Boards { get; set; }
     public DbSet<Entities.Card> Cards { get; set; }
     public DbSet<Entities.Game> Games { get; set; }
     public DbSet<Entities.FoundSet> Sets { get; set; }
@@ -22,9 +21,5 @@ public class SetGameDbContext : IdentityDbContext<User>
 
         // Add all configurations from the assembly, no need to add each one separately
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(Program).Assembly);
-
-        modelBuilder.Entity<Board>()
-            .HasMany(b => b.Cards)
-            .WithMany();
     }
 }
