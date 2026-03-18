@@ -10,6 +10,7 @@ public class SetGameDbContext : IdentityDbContext<User>
     public DbSet<Entities.Card> Cards { get; set; }
     public DbSet<Entities.Game> Games { get; set; }
     public DbSet<Entities.FoundSet> Sets { get; set; }
+    public DbSet<Entities.GameState> GameStates { get; set; }
 
     public SetGameDbContext(DbContextOptions options) : base(options)
     {

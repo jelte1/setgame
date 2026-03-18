@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.Build.Framework;
+using System.ComponentModel.DataAnnotations;
 
 namespace backend.Entities;
 
