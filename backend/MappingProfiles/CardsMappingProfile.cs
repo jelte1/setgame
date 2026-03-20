@@ -1,5 +1,5 @@
 using AutoMapper;
-using backend.Dtos.Card;
+using backend.DTOs.Card;
 using backend.Entities;
 
 namespace backend.MappingProfiles;

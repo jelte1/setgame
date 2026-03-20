@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace backend.Dtos.User;
+namespace backend.DTOs.User;
 
 public class AuthResponseDto
 {

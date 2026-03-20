@@ -2,8 +2,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using AutoMapper;
-using backend.Contracts;
-using backend.Dtos.User;
+using backend.Interfaces;
+using backend.DTOs.User;
 using backend.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -117,9 +117,9 @@ public class AuthManager : IAuthManager
         var userClaims = await _userManager.GetClaimsAsync(_user);
         var claims = new List<Claim>
         {
-            new Claim(JwtRegisteredClaimNames.Sub, _user.UserName),
+            new Claim(JwtRegisteredClaimNames.Name, _user.UserName),
+            new Claim(JwtRegisteredClaimNames.Sub, _user.Id),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(JwtRegisteredClaimNames.Name, _user.UserName)
         }.Union(userClaims).Union(roleClaims);
 
         var token = new JwtSecurityToken(

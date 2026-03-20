@@ -1,6 +1,6 @@
 using Microsoft.Build.Framework;
 
-namespace backend.Dtos.User;
+namespace backend.DTOs.User;
 
 public class RegisterLoginUserDto
 {

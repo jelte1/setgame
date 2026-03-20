@@ -1,6 +1,11 @@
-using backend.Contracts;
+using System.Security.Claims;
+using AutoMapper;
+using backend.DTOs.Game;
+using backend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using backend.Entities;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace backend.Controllers
 {
@@ -9,21 +14,21 @@ namespace backend.Controllers
     public class GamesController : ControllerBase
     {
         private readonly IGamesRepository _gamesRepository;
+        private readonly IUsersRepository _usersRepository;
+        private readonly IGameService _gamesService;
+        private readonly IMapper _mapper;
 
-        public GamesController(IGamesRepository gamesRepository)
+        public GamesController(IGamesRepository gamesRepository, IUsersRepository usersRepository, IGameService gameService, IMapper mapper)
         {
             _gamesRepository = gamesRepository;
+            _usersRepository = usersRepository;
+            _gamesService = gameService;
+            _mapper = mapper;
         }
-
-        // GET: api/Game
-        // [HttpGet]
-        // public async Task<ActionResult<IEnumerable<Game>>> GetGames()
-        // {
-        //     return await _gamesRepository.GetAllAsync();
-        // }
 
         // GET: api/Game/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<Game>> GetGame(int id)
         {
             var game = await _gamesRepository.GetAsync(id);
@@ -37,7 +42,6 @@ namespace backend.Controllers
         }
 
         // PUT: api/Game/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         // [HttpPut("{id}")]
         // public async Task<IActionResult> PutGame(int id, Game game)
         // {
@@ -68,38 +72,46 @@ namespace backend.Controllers
         // }
 
         // POST: api/Game
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Game>> PostGame(Game game)
+        [Authorize]
+        public async Task<ActionResult<GetGameDto>> PostGame()
         {
-            await _gamesRepository.AddAsync(game);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            return CreatedAtAction("GetGame", new { id = game.Id }, game);
-        }
-
-        // DELETE: api/Game/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteGame(int id)
-        {
-            var game = await _gamesRepository.GetAsync(id);
-            if (game == null)
+            if (string.IsNullOrEmpty(userId))
             {
-                return NotFound();
+                return Unauthorized();
             }
+            
+            var user = await _usersRepository.GetUserByUserId(userId);
+            
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+            
+            var game = await _gamesService.CreateGameAsync(userId);
+            
+            var getGameDto = _mapper.Map<GetGameDto>(game);
 
-            await _gamesRepository.DeleteAsync(id);
-
-            return NoContent();
+            return CreatedAtAction("GetGame", new { id = game.Id }, getGameDto);
         }
 
         // GET: api/Game/1/user
         [HttpGet("{id}/user")]
+        [Authorize]
         public async Task<ActionResult<User>> GetGameUser(int id)
         {
             var game = await _gamesRepository.GetAsync(id);
-            var user = game.User;
 
-            if (game == null || user == null)
+            if (game == null)
+            {
+                return NotFound();
+            }
+            
+            var user = game.User;
+            
+            if (user == null)
             {
                 return NotFound();
             }

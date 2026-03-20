@@ -1,4 +1,4 @@
-using backend.Contracts;
+using backend.Interfaces;
 using backend.Database;
 using backend.Entities;
 using Microsoft.EntityFrameworkCore;

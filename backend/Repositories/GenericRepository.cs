@@ -1,4 +1,4 @@
-using backend.Contracts;
+using backend.Interfaces;
 using backend.Database;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql.Storage.Internal;

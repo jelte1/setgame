@@ -11,10 +11,9 @@ public class Game
 
     public bool IsFinished { get; set; }
 
-    public string UserId { get; set; }
+    public required string UserId { get; set; }
     [ForeignKey(nameof(UserId))]
-    [Required]
-    public required User User { get; set; }
+    public User User { get; set; }
 
     public ICollection<GameState> GameStates { get; set; } = new List<GameState>();
 

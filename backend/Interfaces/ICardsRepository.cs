@@ -1,6 +1,6 @@
 using backend.Entities;
 
-namespace backend.Contracts;
+namespace backend.Interfaces;
 
 public interface ICardsRepository : IGenericRepository<Card>
 {

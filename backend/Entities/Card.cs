@@ -8,7 +8,7 @@ public enum Color { Red, Purple, Green }
 
 public enum Filling { Solid, Striped, Empty }
 
-public enum Amount { One = 1, Two = 2, Three = 3 }
+public enum Amount { One, Two, Three }
 
 public class Card
 {
