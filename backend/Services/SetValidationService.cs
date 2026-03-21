@@ -50,4 +50,13 @@ public class SetValidationService : ISetValidationService
         var allSets = FindAllSets(tableCards);
         return allSets.FirstOrDefault();
     }
+    
+    // public EnsureSetsPossible(List<Card> tableCards)
+    // {
+    //     while (FindAllSets(tableCards).Count == 0)
+    //     {
+    //         // Logic to add more cards to the table until at least one set is possible
+    //         // This would typically involve drawing cards from the deck and adding them to the table
+    //     }
+    // }
 }

@@ -7,12 +7,12 @@ namespace backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly IAuthManager _authManager;
         private readonly IUsersRepository _usersRepository;
 
-        public UserController(IAuthManager authManager, IUsersRepository usersRepository)
+        public UsersController(IAuthManager authManager, IUsersRepository usersRepository)
         {
             this._authManager = authManager;
             this._usersRepository = usersRepository;

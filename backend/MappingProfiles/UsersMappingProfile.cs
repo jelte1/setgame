@@ -10,5 +10,6 @@ public class UsersMappingProfile : Profile
     public UsersMappingProfile()
     {
         CreateMap<RegisterLoginUserDto, User>().ReverseMap();
+        CreateMap<GetUserDto, User>().ReverseMap();
     }
 }

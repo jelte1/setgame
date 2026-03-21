@@ -13,12 +13,12 @@ public class GameState
     
     public int Order { get; set; }
 
-    public int GameId { get; set; }
+    public required int GameId { get; set; }
     [ForeignKey(nameof(GameId))]
     [Required]
     public Game Game { get; set; }
     
-    public int CardId { get; set; }
+    public required int CardId { get; set; }
     [ForeignKey(nameof(CardId))]
     [Required]
     public Card Card { get; set; }

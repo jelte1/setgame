@@ -1,127 +1,121 @@
 using System.Security.Claims;
 using AutoMapper;
 using backend.DTOs.Game;
+using backend.DTOs.User;
 using backend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using backend.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.JsonWebTokens;
 
-namespace backend.Controllers
+namespace backend.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class GamesController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class GamesController : ControllerBase
+    private readonly IGamesRepository _gamesRepository;
+    private readonly IUsersRepository _usersRepository;
+    private readonly IGameService _gamesService;
+    private readonly IMapper _mapper;
+
+    public GamesController(IGamesRepository gamesRepository, IUsersRepository usersRepository, IGameService gameService, IMapper mapper)
     {
-        private readonly IGamesRepository _gamesRepository;
-        private readonly IUsersRepository _usersRepository;
-        private readonly IGameService _gamesService;
-        private readonly IMapper _mapper;
+        _gamesRepository = gamesRepository;
+        _usersRepository = usersRepository;
+        _gamesService = gameService;
+        _mapper = mapper;
+    }
 
-        public GamesController(IGamesRepository gamesRepository, IUsersRepository usersRepository, IGameService gameService, IMapper mapper)
+    // GET: api/Games/5
+    [HttpGet("{id}")]
+    [Authorize]
+    public async Task<ActionResult<GetGameDto>> GetGame(int id)
+    {
+        var game = await _gamesRepository.GetGameWithStatesAndFoundSetsAsync(id);
+
+        if (game == null)
         {
-            _gamesRepository = gamesRepository;
-            _usersRepository = usersRepository;
-            _gamesService = gameService;
-            _mapper = mapper;
+            return NotFound();
         }
 
-        // GET: api/Game/5
-        [HttpGet("{id}")]
-        [Authorize]
-        public async Task<ActionResult<Game>> GetGame(int id)
+        return _mapper.Map<GetGameDto>(game);
+    }
+
+    // POST: api/Games
+    [HttpPost]
+    [Authorize]
+    public async Task<ActionResult<GetGameDto>> PostGame()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (string.IsNullOrEmpty(userId))
         {
-            var game = await _gamesRepository.GetAsync(id);
-
-            if (game == null)
-            {
-                return NotFound();
-            }
-
-            return game;
+            return Unauthorized();
         }
-
-        // PUT: api/Game/5
-        // [HttpPut("{id}")]
-        // public async Task<IActionResult> PutGame(int id, Game game)
-        // {
-        //     if (id != game.Id)
-        //     {
-        //         return BadRequest();
-        //     }
-        //
-        //     _gamesRepository.Entry(game).State = EntityState.Modified;
-        //
-        //     try
-        //     {
-        //         await _gamesRepository.SaveChangesAsync();
-        //     }
-        //     catch (DbUpdateConcurrencyException)
-        //     {
-        //         if (!GameExists(id))
-        //         {
-        //             return NotFound();
-        //         }
-        //         else
-        //         {
-        //             throw;
-        //         }
-        //     }
-        //
-        //     return NoContent();
-        // }
-
-        // POST: api/Game
-        [HttpPost]
-        [Authorize]
-        public async Task<ActionResult<GetGameDto>> PostGame()
+        
+        var user = await _usersRepository.GetUserByUserId(userId);
+        
+        if (user == null)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (string.IsNullOrEmpty(userId))
-            {
-                return Unauthorized();
-            }
-            
-            var user = await _usersRepository.GetUserByUserId(userId);
-            
-            if (user == null)
-            {
-                return Unauthorized();
-            }
-            
-            var game = await _gamesService.CreateGameAsync(userId);
-            
-            var getGameDto = _mapper.Map<GetGameDto>(game);
-
-            return CreatedAtAction("GetGame", new { id = game.Id }, getGameDto);
+            return Unauthorized();
         }
+        
+        var game = await _gamesService.CreateGameAsync(userId);
+        
+        var getGameDto = _mapper.Map<GetGameDto>(game);
 
-        // GET: api/Game/1/user
-        [HttpGet("{id}/user")]
-        [Authorize]
-        public async Task<ActionResult<User>> GetGameUser(int id)
+        return CreatedAtAction("GetGame", new { id = game.Id }, getGameDto);
+    }
+
+    // GET: api/Games/1/user
+    [HttpGet("{id}/user")]
+    // [Authorize]
+    public async Task<ActionResult<GetUserDto>> GetGameUser(int id)
+    {
+        var game = await _gamesRepository.GetGameWithUserAsync(id);
+
+        if (game == null)
         {
-            var game = await _gamesRepository.GetAsync(id);
-
-            if (game == null)
-            {
-                return NotFound();
-            }
-            
-            var user = game.User;
-            
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(user);
+            return NotFound("Game not found.");
         }
-
-        private async Task<bool> GameExists(int id)
+        
+        var user = game.User;
+        
+        if (user == null)
         {
-            return await _gamesRepository.Exists(id);
+            return NotFound("User not found.");
         }
+        
+        return Ok(_mapper.Map<GetUserDto>(user));
+    }
+    
+    // POST: /api/Games/1/CheckSet
+    [HttpPost("{id}/CheckSet")]
+    [Authorize]
+    public async Task<ActionResult<CheckSetResponseDto>> CheckSet(int id, [FromBody] CheckSetDto checkSetDto)
+    {
+        var game = await _gamesRepository.GetGameWithStatesAsync(id);
+
+        if (game == null)
+        {
+            return NotFound();
+        }
+        
+        // check that gamne belongs to user (from token)
+        if (game.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier))
+        {
+            return Forbid();
+        }
+        
+
+        var isValidSet = await _gamesService.CheckSet(id, checkSetDto);
+
+        return Ok(isValidSet);
+    }
+
+    private async Task<bool> GameExists(int id)
+    {
+        return await _gamesRepository.Exists(id);
     }
 }
