@@ -1,0 +1,29 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 120px;
+  height: 220px;
+  border: 2px solid #ccc;
+  border-radius: 12px;
+  background: white;
+  cursor: pointer;
+  padding: 10px;
+}
+
+.card.selected {
+  border-color: #4a90e2;
+  box-shadow: 0 0 8px rgba(74, 144, 226, 0.6);
+}
+
+/* Colors — stroke always set, fill inherited by solid */
+.shape.red   { stroke: red;    fill: red;    }
+.shape.purple { stroke: purple; fill: purple; }
+.shape.green  { stroke: green;  fill: green;  }
+
+/* Fillings */
+.shape.solid   { /* fill comes from color class */ }
+.shape.empty   { fill: none; stroke-width: 3; }
+.shape.striped { stroke-width: 2; }
