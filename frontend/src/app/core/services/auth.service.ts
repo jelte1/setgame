@@ -9,12 +9,13 @@ import { AuthResponseModel } from '../models/authResponse.model';
 export class AuthService extends BaseApiService {
   login(username: string, password: string): Observable<AuthResponseModel> {
     return this.http
-      .post<AuthResponseModel>(`${this.apiUrl}user/login`, {
+      .post<AuthResponseModel>(`${this.apiUrl}users/login`, {
         userName: username,
         passwordHash: password,
       })
       .pipe(
         tap((response) => {
+          console.log(response);
           localStorage.setItem('token', response.token);
           localStorage.setItem('userId', response.userId);
         }),
