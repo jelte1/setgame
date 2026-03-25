@@ -1,0 +1,5 @@
+@for (card of cards(); track card.id) {
+  <app-card [card]="card"/>
+} @empty {
+  <p>Board not available.</p>
+}
