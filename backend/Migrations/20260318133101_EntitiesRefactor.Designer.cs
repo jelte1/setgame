@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backend.Database;
 
@@ -11,9 +12,11 @@ using backend.Database;
 namespace backend.Migrations
 {
     [DbContext(typeof(SetGameDbContext))]
-    partial class SetGameDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260318133101_EntitiesRefactor")]
+    partial class EntitiesRefactor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,21 @@ namespace backend.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+
+            modelBuilder.Entity("BoardCard", b =>
+                {
+                    b.Property<int>("BoardId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CardsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("BoardId", "CardsId");
+
+                    b.HasIndex("CardsId");
+
+                    b.ToTable("BoardCard");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -50,7 +68,7 @@ namespace backend.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "2740248e-7d14-4299-aa8d-857df6b1dd6c",
+                            Id = "2c92bf46-394d-4cac-9d75-d09e682be321",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -162,6 +180,19 @@ namespace backend.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("backend.Entities.Board", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Board");
+                });
+
             modelBuilder.Entity("backend.Entities.Card", b =>
                 {
                     b.Property<int>("Id")
@@ -190,7 +221,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 1,
-                            Amount = 0,
+                            Amount = 1,
                             Color = 0,
                             Filling = 0,
                             Shape = 0
@@ -198,7 +229,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 2,
-                            Amount = 1,
+                            Amount = 2,
                             Color = 0,
                             Filling = 0,
                             Shape = 0
@@ -206,7 +237,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 3,
-                            Amount = 2,
+                            Amount = 3,
                             Color = 0,
                             Filling = 0,
                             Shape = 0
@@ -214,7 +245,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 4,
-                            Amount = 0,
+                            Amount = 1,
                             Color = 0,
                             Filling = 1,
                             Shape = 0
@@ -222,7 +253,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 5,
-                            Amount = 1,
+                            Amount = 2,
                             Color = 0,
                             Filling = 1,
                             Shape = 0
@@ -230,7 +261,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 6,
-                            Amount = 2,
+                            Amount = 3,
                             Color = 0,
                             Filling = 1,
                             Shape = 0
@@ -238,7 +269,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 7,
-                            Amount = 0,
+                            Amount = 1,
                             Color = 0,
                             Filling = 2,
                             Shape = 0
@@ -246,7 +277,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 8,
-                            Amount = 1,
+                            Amount = 2,
                             Color = 0,
                             Filling = 2,
                             Shape = 0
@@ -254,7 +285,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 9,
-                            Amount = 2,
+                            Amount = 3,
                             Color = 0,
                             Filling = 2,
                             Shape = 0
@@ -262,7 +293,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 10,
-                            Amount = 0,
+                            Amount = 1,
                             Color = 1,
                             Filling = 0,
                             Shape = 0
@@ -270,7 +301,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 11,
-                            Amount = 1,
+                            Amount = 2,
                             Color = 1,
                             Filling = 0,
                             Shape = 0
@@ -278,7 +309,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 12,
-                            Amount = 2,
+                            Amount = 3,
                             Color = 1,
                             Filling = 0,
                             Shape = 0
@@ -286,7 +317,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 13,
-                            Amount = 0,
+                            Amount = 1,
                             Color = 1,
                             Filling = 1,
                             Shape = 0
@@ -294,7 +325,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 14,
-                            Amount = 1,
+                            Amount = 2,
                             Color = 1,
                             Filling = 1,
                             Shape = 0
@@ -302,7 +333,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 15,
-                            Amount = 2,
+                            Amount = 3,
                             Color = 1,
                             Filling = 1,
                             Shape = 0
@@ -310,7 +341,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 16,
-                            Amount = 0,
+                            Amount = 1,
                             Color = 1,
                             Filling = 2,
                             Shape = 0
@@ -318,7 +349,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 17,
-                            Amount = 1,
+                            Amount = 2,
                             Color = 1,
                             Filling = 2,
                             Shape = 0
@@ -326,7 +357,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 18,
-                            Amount = 2,
+                            Amount = 3,
                             Color = 1,
                             Filling = 2,
                             Shape = 0
@@ -334,7 +365,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 19,
-                            Amount = 0,
+                            Amount = 1,
                             Color = 2,
                             Filling = 0,
                             Shape = 0
@@ -342,7 +373,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 20,
-                            Amount = 1,
+                            Amount = 2,
                             Color = 2,
                             Filling = 0,
                             Shape = 0
@@ -350,7 +381,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 21,
-                            Amount = 2,
+                            Amount = 3,
                             Color = 2,
                             Filling = 0,
                             Shape = 0
@@ -358,7 +389,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 22,
-                            Amount = 0,
+                            Amount = 1,
                             Color = 2,
                             Filling = 1,
                             Shape = 0
@@ -366,7 +397,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 23,
-                            Amount = 1,
+                            Amount = 2,
                             Color = 2,
                             Filling = 1,
                             Shape = 0
@@ -374,7 +405,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 24,
-                            Amount = 2,
+                            Amount = 3,
                             Color = 2,
                             Filling = 1,
                             Shape = 0
@@ -382,7 +413,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 25,
-                            Amount = 0,
+                            Amount = 1,
                             Color = 2,
                             Filling = 2,
                             Shape = 0
@@ -390,7 +421,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 26,
-                            Amount = 1,
+                            Amount = 2,
                             Color = 2,
                             Filling = 2,
                             Shape = 0
@@ -398,7 +429,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 27,
-                            Amount = 2,
+                            Amount = 3,
                             Color = 2,
                             Filling = 2,
                             Shape = 0
@@ -406,7 +437,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 28,
-                            Amount = 0,
+                            Amount = 1,
                             Color = 0,
                             Filling = 0,
                             Shape = 1
@@ -414,7 +445,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 29,
-                            Amount = 1,
+                            Amount = 2,
                             Color = 0,
                             Filling = 0,
                             Shape = 1
@@ -422,7 +453,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 30,
-                            Amount = 2,
+                            Amount = 3,
                             Color = 0,
                             Filling = 0,
                             Shape = 1
@@ -430,7 +461,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 31,
-                            Amount = 0,
+                            Amount = 1,
                             Color = 0,
                             Filling = 1,
                             Shape = 1
@@ -438,7 +469,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 32,
-                            Amount = 1,
+                            Amount = 2,
                             Color = 0,
                             Filling = 1,
                             Shape = 1
@@ -446,7 +477,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 33,
-                            Amount = 2,
+                            Amount = 3,
                             Color = 0,
                             Filling = 1,
                             Shape = 1
@@ -454,7 +485,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 34,
-                            Amount = 0,
+                            Amount = 1,
                             Color = 0,
                             Filling = 2,
                             Shape = 1
@@ -462,7 +493,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 35,
-                            Amount = 1,
+                            Amount = 2,
                             Color = 0,
                             Filling = 2,
                             Shape = 1
@@ -470,7 +501,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 36,
-                            Amount = 2,
+                            Amount = 3,
                             Color = 0,
                             Filling = 2,
                             Shape = 1
@@ -478,7 +509,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 37,
-                            Amount = 0,
+                            Amount = 1,
                             Color = 1,
                             Filling = 0,
                             Shape = 1
@@ -486,7 +517,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 38,
-                            Amount = 1,
+                            Amount = 2,
                             Color = 1,
                             Filling = 0,
                             Shape = 1
@@ -494,7 +525,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 39,
-                            Amount = 2,
+                            Amount = 3,
                             Color = 1,
                             Filling = 0,
                             Shape = 1
@@ -502,7 +533,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 40,
-                            Amount = 0,
+                            Amount = 1,
                             Color = 1,
                             Filling = 1,
                             Shape = 1
@@ -510,7 +541,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 41,
-                            Amount = 1,
+                            Amount = 2,
                             Color = 1,
                             Filling = 1,
                             Shape = 1
@@ -518,7 +549,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 42,
-                            Amount = 2,
+                            Amount = 3,
                             Color = 1,
                             Filling = 1,
                             Shape = 1
@@ -526,7 +557,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 43,
-                            Amount = 0,
+                            Amount = 1,
                             Color = 1,
                             Filling = 2,
                             Shape = 1
@@ -534,7 +565,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 44,
-                            Amount = 1,
+                            Amount = 2,
                             Color = 1,
                             Filling = 2,
                             Shape = 1
@@ -542,7 +573,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 45,
-                            Amount = 2,
+                            Amount = 3,
                             Color = 1,
                             Filling = 2,
                             Shape = 1
@@ -550,7 +581,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 46,
-                            Amount = 0,
+                            Amount = 1,
                             Color = 2,
                             Filling = 0,
                             Shape = 1
@@ -558,7 +589,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 47,
-                            Amount = 1,
+                            Amount = 2,
                             Color = 2,
                             Filling = 0,
                             Shape = 1
@@ -566,7 +597,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 48,
-                            Amount = 2,
+                            Amount = 3,
                             Color = 2,
                             Filling = 0,
                             Shape = 1
@@ -574,7 +605,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 49,
-                            Amount = 0,
+                            Amount = 1,
                             Color = 2,
                             Filling = 1,
                             Shape = 1
@@ -582,7 +613,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 50,
-                            Amount = 1,
+                            Amount = 2,
                             Color = 2,
                             Filling = 1,
                             Shape = 1
@@ -590,7 +621,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 51,
-                            Amount = 2,
+                            Amount = 3,
                             Color = 2,
                             Filling = 1,
                             Shape = 1
@@ -598,7 +629,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 52,
-                            Amount = 0,
+                            Amount = 1,
                             Color = 2,
                             Filling = 2,
                             Shape = 1
@@ -606,7 +637,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 53,
-                            Amount = 1,
+                            Amount = 2,
                             Color = 2,
                             Filling = 2,
                             Shape = 1
@@ -614,7 +645,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 54,
-                            Amount = 2,
+                            Amount = 3,
                             Color = 2,
                             Filling = 2,
                             Shape = 1
@@ -622,7 +653,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 55,
-                            Amount = 0,
+                            Amount = 1,
                             Color = 0,
                             Filling = 0,
                             Shape = 2
@@ -630,7 +661,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 56,
-                            Amount = 1,
+                            Amount = 2,
                             Color = 0,
                             Filling = 0,
                             Shape = 2
@@ -638,7 +669,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 57,
-                            Amount = 2,
+                            Amount = 3,
                             Color = 0,
                             Filling = 0,
                             Shape = 2
@@ -646,7 +677,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 58,
-                            Amount = 0,
+                            Amount = 1,
                             Color = 0,
                             Filling = 1,
                             Shape = 2
@@ -654,7 +685,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 59,
-                            Amount = 1,
+                            Amount = 2,
                             Color = 0,
                             Filling = 1,
                             Shape = 2
@@ -662,7 +693,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 60,
-                            Amount = 2,
+                            Amount = 3,
                             Color = 0,
                             Filling = 1,
                             Shape = 2
@@ -670,7 +701,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 61,
-                            Amount = 0,
+                            Amount = 1,
                             Color = 0,
                             Filling = 2,
                             Shape = 2
@@ -678,7 +709,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 62,
-                            Amount = 1,
+                            Amount = 2,
                             Color = 0,
                             Filling = 2,
                             Shape = 2
@@ -686,7 +717,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 63,
-                            Amount = 2,
+                            Amount = 3,
                             Color = 0,
                             Filling = 2,
                             Shape = 2
@@ -694,7 +725,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 64,
-                            Amount = 0,
+                            Amount = 1,
                             Color = 1,
                             Filling = 0,
                             Shape = 2
@@ -702,7 +733,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 65,
-                            Amount = 1,
+                            Amount = 2,
                             Color = 1,
                             Filling = 0,
                             Shape = 2
@@ -710,7 +741,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 66,
-                            Amount = 2,
+                            Amount = 3,
                             Color = 1,
                             Filling = 0,
                             Shape = 2
@@ -718,7 +749,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 67,
-                            Amount = 0,
+                            Amount = 1,
                             Color = 1,
                             Filling = 1,
                             Shape = 2
@@ -726,7 +757,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 68,
-                            Amount = 1,
+                            Amount = 2,
                             Color = 1,
                             Filling = 1,
                             Shape = 2
@@ -734,7 +765,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 69,
-                            Amount = 2,
+                            Amount = 3,
                             Color = 1,
                             Filling = 1,
                             Shape = 2
@@ -742,7 +773,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 70,
-                            Amount = 0,
+                            Amount = 1,
                             Color = 1,
                             Filling = 2,
                             Shape = 2
@@ -750,7 +781,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 71,
-                            Amount = 1,
+                            Amount = 2,
                             Color = 1,
                             Filling = 2,
                             Shape = 2
@@ -758,7 +789,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 72,
-                            Amount = 2,
+                            Amount = 3,
                             Color = 1,
                             Filling = 2,
                             Shape = 2
@@ -766,7 +797,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 73,
-                            Amount = 0,
+                            Amount = 1,
                             Color = 2,
                             Filling = 0,
                             Shape = 2
@@ -774,7 +805,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 74,
-                            Amount = 1,
+                            Amount = 2,
                             Color = 2,
                             Filling = 0,
                             Shape = 2
@@ -782,7 +813,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 75,
-                            Amount = 2,
+                            Amount = 3,
                             Color = 2,
                             Filling = 0,
                             Shape = 2
@@ -790,7 +821,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 76,
-                            Amount = 0,
+                            Amount = 1,
                             Color = 2,
                             Filling = 1,
                             Shape = 2
@@ -798,7 +829,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 77,
-                            Amount = 1,
+                            Amount = 2,
                             Color = 2,
                             Filling = 1,
                             Shape = 2
@@ -806,7 +837,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 78,
-                            Amount = 2,
+                            Amount = 3,
                             Color = 2,
                             Filling = 1,
                             Shape = 2
@@ -814,14 +845,6 @@ namespace backend.Migrations
                         new
                         {
                             Id = 79,
-                            Amount = 0,
-                            Color = 2,
-                            Filling = 2,
-                            Shape = 2
-                        },
-                        new
-                        {
-                            Id = 80,
                             Amount = 1,
                             Color = 2,
                             Filling = 2,
@@ -829,8 +852,16 @@ namespace backend.Migrations
                         },
                         new
                         {
-                            Id = 81,
+                            Id = 80,
                             Amount = 2,
+                            Color = 2,
+                            Filling = 2,
+                            Shape = 2
+                        },
+                        new
+                        {
+                            Id = 81,
+                            Amount = 3,
                             Color = 2,
                             Filling = 2,
                             Shape = 2
@@ -921,7 +952,7 @@ namespace backend.Migrations
 
                     b.HasIndex("GameId");
 
-                    b.ToTable("GameStates");
+                    b.ToTable("GameState");
                 });
 
             modelBuilder.Entity("backend.Entities.User", b =>
@@ -986,6 +1017,21 @@ namespace backend.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("BoardCard", b =>
+                {
+                    b.HasOne("backend.Entities.Board", null)
+                        .WithMany()
+                        .HasForeignKey("BoardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.Entities.Card", null)
+                        .WithMany()
+                        .HasForeignKey("CardsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

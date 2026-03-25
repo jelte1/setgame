@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backend.Database;
 
@@ -11,9 +12,11 @@ using backend.Database;
 namespace backend.Migrations
 {
     [DbContext(typeof(SetGameDbContext))]
-    partial class SetGameDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260320224747_AddedGameState")]
+    partial class AddedGameState
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,7 +53,7 @@ namespace backend.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "2740248e-7d14-4299-aa8d-857df6b1dd6c",
+                            Id = "fe07b4f6-8893-497d-b4f4-2e9349b5b2d2",
                             Name = "User",
                             NormalizedName = "USER"
                         });

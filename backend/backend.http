@@ -1,23 +1,38 @@
-GET {{backend_HostAddress}}/api/Cards/
-Accept: application/json
-
-###
-
-GET {{backend_HostAddress}}/api/Cards/5
-Accept: application/json
-
-###
-
-POST {{backend_HostAddress}}/api/Cards/
+#GET {{backend_HostAddress}}/api/Cards/
+#Accept: application/json
+#
+####
+#
+#GET {{backend_HostAddress}}/api/Cards/5
+#Accept: application/json
+#
+####
+#
+#POST {{backend_HostAddress}}/api/Cards/
+#Content-Type: application/json
+#
+#{
+#  "Shape": 1,
+#  "Color": 1,
+#  "Filling": 1,
+#  "Amount": 1
+#}
+#
+####
+#
+#DELETE {{backend_HostAddress}}/api/Cards/83
+#
+### Login
+# @name login
+POST http://localhost:5196/api/user/login
 Content-Type: application/json
 
 {
-  "Shape": 1,
-  "Color": 1,
-  "Filling": 1,
-  "Amount": 1
+  "userName": "tester33",
+  "passwordHash": "P37dgh#dd"
 }
 
-###
 
-DELETE {{backend_HostAddress}}/api/Cards/83
+### Create Game
+POST http://localhost:5196/api/games
+Authorization: Bearer {{login.response.body.$.token}}

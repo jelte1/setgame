@@ -1,6 +1,6 @@
 using backend.Entities;
 
-namespace backend.Dtos.Card;
+namespace backend.DTOs.Card;
 
 public class GetCardDto
 {

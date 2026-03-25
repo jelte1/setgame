@@ -1,9 +1,10 @@
 using System.Text;
-using backend.Contracts;
+using backend.Interfaces;
 using backend.Database;
 using backend.Entities;
 using backend.MappingProfiles;
 using backend.Repositories;
+using backend.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,8 @@ builder.Services.AddDbContext<SetGameDbContext>(options =>
 
 builder.Services.AddIdentityCore<User>()
     .AddRoles<IdentityRole>()
+    .AddTokenProvider<DataProtectorTokenProvider<User>>("setgameApi")
+    .AddDefaultTokenProviders()
     .AddEntityFrameworkStores<SetGameDbContext>();
 
 builder.Services.AddControllers();
@@ -35,6 +38,12 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<ICardsRepository, CardsRepository>();
 builder.Services.AddScoped<IAuthManager, AuthManager>();
+builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+builder.Services.AddScoped<IGamesRepository, GamesRepository>();
+builder.Services.AddScoped<IGameStatesRepository, GameStatesRepository>();
+builder.Services.AddScoped<IFoundSetsRepository, FoundSetsRepository>();
+builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<ISetValidationService, SetValidationService>();
 
 builder.Services.AddAuthentication(options =>
 {

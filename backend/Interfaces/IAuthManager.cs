@@ -1,8 +1,8 @@
-using backend.Dtos.User;
+using backend.DTOs.User;
 using backend.Entities;
 using Microsoft.AspNetCore.Identity;
 
-namespace backend.Contracts;
+namespace backend.Interfaces;
 
 public interface IAuthManager
 {
@@ -10,5 +10,4 @@ public interface IAuthManager
     Task<AuthResponseDto> Login(RegisterLoginUserDto user);
     Task<string> CreateRefreshToken();
     Task<AuthResponseDto> VerifyRefreshToken(AuthResponseDto request);
-
 }

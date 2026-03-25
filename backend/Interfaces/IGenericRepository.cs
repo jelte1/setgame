@@ -1,4 +1,4 @@
-namespace backend.Contracts;
+namespace backend.Interfaces;
 
 public interface IGenericRepository<T> where T : class
 {

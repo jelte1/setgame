@@ -1,12 +1,10 @@
 using Microsoft.Build.Framework;
 
-namespace backend.Dtos.User;
+namespace backend.DTOs.User;
 
 public class RegisterLoginUserDto
 {
-    [Required]
-    public string UserName { get; set; }
-
-    [Required]
-    public string PasswordHash { get; set; }
+    public required string UserName { get; set; }
+    
+    public required string PasswordHash { get; set; }
 }

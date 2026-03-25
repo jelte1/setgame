@@ -1,5 +1,5 @@
-using backend.Contracts;
-using backend.Dtos.User;
+using backend.Interfaces;
+using backend.DTOs.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,20 +7,19 @@ namespace backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UsersController : ControllerBase
     {
-        private IAuthManager _authManager;
+        private readonly IAuthManager _authManager;
+        private readonly IUsersRepository _usersRepository;
 
-        public UserController(IAuthManager authManager)
+        public UsersController(IAuthManager authManager, IUsersRepository usersRepository)
         {
             this._authManager = authManager;
+            this._usersRepository = usersRepository;
         }
 
         // POST: api/User/register
         [HttpPost("register")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Register([FromBody] RegisterLoginUserDto registerUserDto)
         {
             var errors = await _authManager.Register(registerUserDto);
@@ -40,9 +39,6 @@ namespace backend.Controllers
 
         // POST: api/User/login
         [HttpPost("login")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Login([FromBody] RegisterLoginUserDto loginUserDto)
         {
             var authResponse = await _authManager.Login(loginUserDto);
@@ -53,6 +49,28 @@ namespace backend.Controllers
             }
 
             return Ok(authResponse);
+        }
+        
+        // POST: api/User/refreshtoken
+        [HttpPost("refreshtoken")]
+        public async Task<IActionResult> RefreshToken([FromBody] AuthResponseDto requestDto)
+        {
+            var authResponse = await _authManager.VerifyRefreshToken(requestDto);
+
+            if (authResponse == null)
+            {
+                return Unauthorized();
+            }
+
+            return Ok(authResponse);
+        }
+        
+        // GET: api/User/1/Games
+        [HttpGet("{id}/Games")]
+        public async Task<IActionResult> GetUserGames(string id)
+        {
+            var games = await _usersRepository.GetUserGames(id);
+            return Ok(games);
         }
     }
 }
