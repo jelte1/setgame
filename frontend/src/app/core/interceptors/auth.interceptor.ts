@@ -1,13 +1,13 @@
 import { HttpHandlerFn, HttpRequest } from '@angular/common/http';
 
 export function authInterceptor(request: HttpRequest<unknown>, next: HttpHandlerFn) {
-  //temp...
-  const token = 1;
+
+  const token = localStorage.getItem('token');
 
   if (token) {
     const reqWithHeader = request.clone({
       setHeaders: {
-        Authorization: 'Bearer ' + localStorage.getItem('token'),
+        Authorization: 'Bearer ' + token,
       },
     });
 
