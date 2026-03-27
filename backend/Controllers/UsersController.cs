@@ -1,3 +1,5 @@
+using AutoMapper;
+using backend.DTOs.Game;
 using backend.Interfaces;
 using backend.DTOs.User;
 using Microsoft.AspNetCore.Http;
@@ -11,11 +13,13 @@ namespace backend.Controllers
     {
         private readonly IAuthManager _authManager;
         private readonly IUsersRepository _usersRepository;
+        private readonly IMapper _mapper;
 
-        public UsersController(IAuthManager authManager, IUsersRepository usersRepository)
+        public UsersController(IAuthManager authManager, IUsersRepository usersRepository, IMapper mapper)
         {
             this._authManager = authManager;
             this._usersRepository = usersRepository;
+            this._mapper = mapper;
         }
 
         // POST: api/User/register
@@ -63,14 +67,6 @@ namespace backend.Controllers
             }
 
             return Ok(authResponse);
-        }
-        
-        // GET: api/User/1/Games
-        [HttpGet("{id}/Games")]
-        public async Task<IActionResult> GetUserGames(string id)
-        {
-            var games = await _usersRepository.GetUserGames(id);
-            return Ok(games);
         }
     }
 }

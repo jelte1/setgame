@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './login.css',
   imports: [FormsModule],
 })
+
 export class Login {
   private authService = inject(AuthService);
   private router = inject(Router);

@@ -68,9 +68,32 @@ public class GamesController : ControllerBase
         return CreatedAtAction("GetGame", new { id = game.Id }, getGameDto);
     }
 
+    // GET: api/Games
+    [HttpGet]
+    [Authorize]
+    public async Task<ActionResult<IEnumerable<GetGameDto>>> GetUserGames()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
+        
+        var user = await _usersRepository.GetUserByUserId(userId);
+        if (user == null)
+        {
+            return Unauthorized();
+        }
+        
+        var games = await _gamesRepository.GetGamesByUserAsync(userId);
+        
+        return Ok(_mapper.Map<IEnumerable<GetGameDto>>(games));
+    }
+    
+    
     // GET: api/Games/1/user
     [HttpGet("{id}/user")]
-    // [Authorize]
+    [Authorize]
     public async Task<ActionResult<GetUserDto>> GetGameUser(int id)
     {
         var game = await _gamesRepository.GetGameWithUserAsync(id);

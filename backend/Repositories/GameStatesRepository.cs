@@ -12,4 +12,10 @@ public class GameStatesRepository : GenericRepository<GameState>, IGameStatesRep
     {
         this._context = context;
     }
+    
+    public async Task<IEnumerable<GameState>> AddRangeAsync(IEnumerable<GameState> gameStates)
+    {
+        await _context.AddRangeAsync(gameStates);
+        return gameStates;
+    }
 }

@@ -21,6 +21,15 @@ public class GamesRepository : GenericRepository<Game>, IGamesRepository
             .FirstOrDefaultAsync(g => g.Id == id);
     }
     
+    public async Task<List<Game>> GetGamesByUserAsync(string userId)
+    {
+        return await _context.Games
+            .Include(g => g.GameStates)
+            .Include(g => g.FoundSets)
+            .Where(g => g.UserId == userId)
+            .ToListAsync();
+    }
+    
     public async Task<Game?> GetGameWithStatesAsync(int id)
     {
         return await _context.Games

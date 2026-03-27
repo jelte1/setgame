@@ -34,6 +34,7 @@ public class GameService : IGameService
             CreatedAt = DateTime.Now
         };
         await _gamesRepository.AddAsync(game);
+        await _gamesRepository.SaveChangesAsync();
         
         var cards = await _cardsRepository.GetAllAsync();
         var shuffled = cards.OrderBy(_ => Guid.NewGuid()).ToList();
@@ -51,6 +52,7 @@ public class GameService : IGameService
             await _gameStatesRepository.AddAsync(gameState);
             gameStates.Add(gameState);
         }
+        await _gameStatesRepository.SaveChangesAsync();
         
         var first12 = gameStates
             .OrderBy(gs => gs.Order)
@@ -62,6 +64,8 @@ public class GameService : IGameService
             gs.Location = CardLocation.Table;
             await _gameStatesRepository.UpdateAsync(gs);
         }
+        
+        await _gameStatesRepository.SaveChangesAsync();
 
         return game;
     }
