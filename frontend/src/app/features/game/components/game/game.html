@@ -1,1 +1,19 @@
-<p>game works!</p>
+<main>
+  @if (game(); as currentGame) {
+    <div class="container">
+      <div class="miniContainer">
+        <h1>Game Details</h1>
+        <button [routerLink]="['/games']">Back to overview</button>
+      </div>
+      <p>Game ID: {{ currentGame.id }}</p>
+      <p>Created At: {{ currentGame.createdAt }}</p>
+
+      <app-board [cards]="tableCards()"/>
+    </div>
+  } @else {
+    <div class="container">
+      <h1>Game Not Found</h1>
+      <p>A game with that ID does not exist.</p>
+    </div>
+  }
+</main>

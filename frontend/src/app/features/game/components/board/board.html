@@ -1,5 +1,11 @@
-@for (card of cards(); track card.id) {
-  <app-card [card]="card"/>
-} @empty {
-  <p>Board not available.</p>
-}
+<main>
+  <div class="board-wrapper">
+    <div class="board">
+      @for (card of cards(); track card.id) {
+        <app-card [card]="card"/>
+      } @empty {
+        <p>Board not available.</p>
+      }
+    </div>
+  </div>
+</main>

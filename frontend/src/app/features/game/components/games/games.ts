@@ -1,8 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { GameService } from '../../../../core/services/game.service';
-import { Observable } from 'rxjs';
-import { GameModel } from '../../../../core/models/game.model';
+import { BaseGameModel } from '../../../../core/models/baseGame.model';
 
 @Component({
   selector: 'app-games',
@@ -14,7 +13,7 @@ export class Games {
   private gameService = inject(GameService);
   private router = inject(Router);
 
-  games = signal<GameModel[]>([]);
+  games = signal<BaseGameModel[]>([]);
 
   ngOnInit(): void {
     this.loadGames();
@@ -24,7 +23,6 @@ export class Games {
     this.gameService.getUserGames().subscribe({
       next: (games) => {
         this.games.set(games);
-        console.log('Games loaded:', games); // or this.games()
       },
       error: (err) => console.error('Error loading games:', err),
     });

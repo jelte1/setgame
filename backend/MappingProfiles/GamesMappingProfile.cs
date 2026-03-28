@@ -10,5 +10,6 @@ public class GamesMappingProfile : Profile
     {
         CreateMap<CreateGameDto, Game>().ReverseMap();
         CreateMap<GetGameDto, Game>().ReverseMap();
+        CreateMap<GetBaseGameDto, Game>().ReverseMap();
     }
 }
