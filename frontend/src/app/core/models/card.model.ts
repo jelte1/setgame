@@ -1,8 +1,8 @@
-export enum Shape { 'Oval' = 1, 'Diamond' = 2, 'Squiggle' = 3 }
+export enum Shape { Oval, Diamond, Squiggle }
 
-export enum Color { Red = 1, Purple = 2, Green = 3 }
+export enum Color { Red, Purple, Green }
 
-export enum Filling { Solid = 1, Striped = 2, Empty = 3 }
+export enum Filling { Solid, Striped, Empty }
 
 export enum Amount { One = 1, Two = 2, Three = 3 }
 

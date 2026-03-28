@@ -16,6 +16,23 @@ export class AuthService extends BaseApiService {
         tap((response) => {
           localStorage.setItem('token', response.token);
           localStorage.setItem('userId', response.userId);
+          localStorage.setItem('refreshToken', response.refreshToken);
+        }),
+      );
+  }
+
+  refreshToken(refreshToken: string): Observable<AuthResponseModel> {
+    return this.http
+      .post<AuthResponseModel>(`${this.apiUrl}/users/refreshtoken`, {
+        userId: localStorage.getItem('userId'),
+        token: localStorage.getItem('token'),
+        refreshToken: refreshToken,
+      })
+      .pipe(
+        tap((response) => {
+          localStorage.setItem('token', response.token);
+          localStorage.setItem('userId', response.userId);
+          localStorage.setItem('refreshToken', response.refreshToken);
         }),
       );
   }
@@ -23,6 +40,7 @@ export class AuthService extends BaseApiService {
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('userId');
+    localStorage.removeItem('refreshToken');
   }
 
   isLoggedIn(): boolean {

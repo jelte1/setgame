@@ -37,6 +37,7 @@ public class GameService : IGameService
         await _gamesRepository.SaveChangesAsync();
         
         var cards = await _cardsRepository.GetAllAsync();
+        
         var shuffled = cards.OrderBy(_ => Guid.NewGuid()).ToList();
         
         var gameStates = new List<GameState>();

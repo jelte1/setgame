@@ -35,7 +35,5 @@ export class Card {
   });
 
   ngOnInit() {
-    console.log('card: ' + this.card().amount);
-    console.log('func: ' + this.amount);
   }
 }

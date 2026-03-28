@@ -1,6 +1,5 @@
 import { Component, signal } from '@angular/core';
 import { Header } from '../header/header';
-import { CardModel } from './core/models/card.model';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
@@ -12,5 +11,4 @@ import { RouterOutlet } from '@angular/router';
 })
 export class App {
   protected readonly title = signal('frontend');
-  cards = [new CardModel(1, 1, 2, 2, 3)];
 }

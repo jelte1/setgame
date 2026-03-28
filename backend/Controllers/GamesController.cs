@@ -71,7 +71,7 @@ public class GamesController : ControllerBase
     // GET: api/Games
     [HttpGet]
     [Authorize]
-    public async Task<ActionResult<IEnumerable<GetGameDto>>> GetUserGames()
+    public async Task<ActionResult<IEnumerable<GetBaseGameDto>>> GetUserGames()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (string.IsNullOrEmpty(userId))
@@ -87,7 +87,7 @@ public class GamesController : ControllerBase
         
         var games = await _gamesRepository.GetGamesByUserAsync(userId);
         
-        return Ok(_mapper.Map<IEnumerable<GetGameDto>>(games));
+        return Ok(_mapper.Map<IEnumerable<GetBaseGameDto>>(games));
     }
     
     

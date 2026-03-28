@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { CardModel } from '../../../../core/models/card.model';
 import { Card } from '../card/card';
 
@@ -10,5 +10,9 @@ import { Card } from '../card/card';
   styleUrl: './board.css',
 })
 export class Board {
-  cards = input.required<CardModel[]>();
+  cards = input.required<CardModel[]>()
+
+  ngOnInit() {
+    console.log(this.cards());
+  }
 }
