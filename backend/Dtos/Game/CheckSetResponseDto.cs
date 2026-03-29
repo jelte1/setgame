@@ -1,9 +1,9 @@
-using backend.Dtos.GameState;
+using backend.Dtos.GameCardState;
 
 namespace backend.DTOs.Game;
 
 public class CheckSetResponseDto
 {
     public bool IsSet { get; set; }
-    public ICollection<GetGameStateDto> NewGameStates { get; set; } = new List<GetGameStateDto>();
+    public ICollection<GetGameCardStateDto> NewGameCardStates { get; set; } = new List<GetGameCardStateDto>();
 }

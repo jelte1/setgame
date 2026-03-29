@@ -7,5 +7,5 @@ public interface IGameService
 {
     Task<Game> CreateGameAsync(string userId);
     Task<CheckSetResponseDto> CheckSet(int gameId, CheckSetDto checkSetDto);
-    Task<List<GameState>> DrawCards(Game game);
+    Task<List<GameCardState>> DrawCards(Game game);
 }

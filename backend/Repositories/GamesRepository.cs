@@ -24,7 +24,7 @@ public class GamesRepository : GenericRepository<Game>, IGamesRepository
     public async Task<List<Game>> GetGamesByUserAsync(string userId)
     {
         return await _context.Games
-            .Include(g => g.GameStates)
+            .Include(g => g.GameCardStates)
             .Include(g => g.FoundSets)
             .Where(g => g.UserId == userId)
             .ToListAsync();
@@ -33,7 +33,7 @@ public class GamesRepository : GenericRepository<Game>, IGamesRepository
     public async Task<Game?> GetGameWithStatesAsync(int id)
     {
         return await _context.Games
-            .Include(g => g.GameStates)
+            .Include(g => g.GameCardStates)
                 .ThenInclude(gs => gs.Card)
             .FirstOrDefaultAsync(g => g.Id == id);
     }
@@ -41,7 +41,7 @@ public class GamesRepository : GenericRepository<Game>, IGamesRepository
      public async Task<Game?> GetGameWithStatesAndFoundSetsAsync(int id)
     {
         return await _context.Games
-            .Include(g => g.GameStates)
+            .Include(g => g.GameCardStates)
                 .ThenInclude(gs => gs.Card)
             .Include(g => g.FoundSets)
             .FirstOrDefaultAsync(g => g.Id == id);

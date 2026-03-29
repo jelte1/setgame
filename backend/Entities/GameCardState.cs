@@ -5,7 +5,7 @@ namespace backend.Entities;
 
 public enum CardLocation { Deck, Table, Discarded }
 
-public class GameState
+public class GameCardState
 {
     public int Id { get; set; }
     

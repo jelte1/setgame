@@ -15,7 +15,7 @@ public class Game
     [ForeignKey(nameof(UserId))]
     public User User { get; set; }
 
-    public ICollection<GameState> GameStates { get; set; } = new List<GameState>();
+    public ICollection<GameCardState> GameCardStates { get; set; } = new List<GameCardState>();
 
     public ICollection<FoundSet> FoundSets { get; set; } = new List<FoundSet>();
 }

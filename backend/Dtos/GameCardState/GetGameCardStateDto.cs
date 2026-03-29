@@ -1,9 +1,9 @@
 using backend.DTOs.Card;
 using backend.Entities;
 
-namespace backend.Dtos.GameState;
+namespace backend.Dtos.GameCardState;
 
-public class GetGameStateDto
+public class GetGameCardStateDto
 {
     public int Id { get; set; }
     
