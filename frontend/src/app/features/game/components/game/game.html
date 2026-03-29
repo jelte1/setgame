@@ -5,10 +5,9 @@
         <h1>Game Details</h1>
         <button [routerLink]="['/games']">Back to overview</button>
       </div>
-      <p>Game ID: {{ currentGame.id }}</p>
       <p>Created At: {{ currentGame.createdAt }}</p>
 
-      <app-board [cards]="tableCards()"/>
+      <app-board [cards]="tableCards()" [selectedCards]="selectedCards()" (cardClicked)="selectCard($event)"/>
     </div>
   } @else {
     <div class="container">

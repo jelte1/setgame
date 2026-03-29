@@ -5,6 +5,8 @@ import { Subscription } from 'rxjs';
 import { GameService } from '../../../../core/services/game.service';
 import { CardLocation } from '../../../../core/models/gameState.model';
 import { Board } from '../board/board';
+import { CardModel } from '../../../../core/models/card.model';
+import { SET_SIZE } from '../../../../core/constants/constants';
 
 @Component({
   selector: 'app-game',
@@ -19,6 +21,7 @@ export class Game {
 
   id!: number;
   private routeSub!: Subscription;
+  selectedCards = signal(<CardModel[]>[]);
 
   game = signal<GameModel | null>(null);
 
@@ -45,7 +48,6 @@ export class Game {
   loadGame(id: number) {
     this.gameService.getGameById(id).subscribe({
       next: (game) => {
-        console.log(game);
         this.game.set(game);
         console.log(this.game()?.gameStates);
       },
@@ -53,5 +55,58 @@ export class Game {
         // errorrrr....
       },
     });
+  }
+
+  selectCard(card: CardModel) {
+    const currentSelectedCards = this.selectedCards();
+    const isSelected = currentSelectedCards.some((c) => c.id === card.id);
+
+    if (isSelected) {
+      this.selectedCards.set(currentSelectedCards.filter((c) => c.id !== card.id));
+      return;
+    }
+
+    if (currentSelectedCards.length < SET_SIZE) {
+      this.selectedCards.set([...currentSelectedCards, card]);
+    }
+
+    if (this.selectedCards().length === SET_SIZE) {
+      this.submitSet();
+    }
+  }
+
+  submitSet() {
+    const cardsToSubmit = this.selectedCards();
+
+    this.gameService.checkSet(this.id, cardsToSubmit[0].id, cardsToSubmit[1].id, cardsToSubmit[2].id)
+      .subscribe({
+        next: (response) => {
+          if (response.isSet) {
+            alert("bingo!");
+            this.game.update((currentGame) => {
+
+              if (!currentGame) {
+                throw new Error("game not loaded");
+              }
+
+              const submittedIds = cardsToSubmit.map((c) => c.id);
+              const withoutDiscarded = currentGame.gameStates.filter(
+                gs => !submittedIds.includes(gs.card.id),
+              );
+
+              const updated = [...withoutDiscarded, ...response.newGameStates];
+
+              return { ...currentGame, gameStates: updated };
+            });
+          } else {
+            alert('Invalid set.');
+          }
+          this.selectedCards.set([]);
+        },
+        error: () => {
+          alert('Error submitting set. Please try again.');
+          this.selectedCards.set([]);
+        },
+      });
   }
 }

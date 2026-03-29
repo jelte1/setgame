@@ -2,7 +2,7 @@
   <div class="board-wrapper">
     <div class="board">
       @for (card of cards(); track card.id) {
-        <app-card [card]="card"/>
+        <app-card [card]="card" [selected]="isSelected(card)" (click)="cardClicked.emit(card)"/>
       } @empty {
         <p>Board not available.</p>
       }

@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { CardModel } from '../../../../core/models/card.model';
 import { Card } from '../card/card';
 
@@ -10,9 +10,15 @@ import { Card } from '../card/card';
   styleUrl: './board.css',
 })
 export class Board {
-  cards = input.required<CardModel[]>()
+  cards = input.required<CardModel[]>();
+  selectedCards = input.required<CardModel[]>();
+  cardClicked = output<CardModel>();
 
   ngOnInit() {
     console.log(this.cards());
+  }
+
+  isSelected(card: CardModel): boolean {
+    return this.selectedCards().some((c) => c.id === card.id);
   }
 }
