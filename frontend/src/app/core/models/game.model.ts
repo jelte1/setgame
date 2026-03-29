@@ -1,4 +1,4 @@
-import { GameStateModel } from './gameState.model';
+import { GameCardStateModel } from './gameCardStateModel';
 import { FoundSetModel } from './foundSet.model';
 
 export interface GameModel {
@@ -6,6 +6,6 @@ export interface GameModel {
   createdAt: Date;
   isFinished: boolean;
   userId: string;
-  gameStates: GameStateModel[];
+  gameCardStates: GameCardStateModel[];
   foundSets: FoundSetModel[];
 }

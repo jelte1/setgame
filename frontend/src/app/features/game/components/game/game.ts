@@ -3,7 +3,7 @@ import { GameModel } from '../../../../core/models/game.model';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { GameService } from '../../../../core/services/game.service';
-import { CardLocation } from '../../../../core/models/gameState.model';
+import { CardLocation } from '../../../../core/models/gameCardStateModel';
 import { Board } from '../board/board';
 import { CardModel } from '../../../../core/models/card.model';
 import { SET_SIZE } from '../../../../core/constants/constants';
@@ -28,7 +28,7 @@ export class Game {
   tableCards = computed(() => {
     return (
       this.game()
-        ?.gameStates.filter((gs) => gs.location === CardLocation.Table)
+        ?.gameCardStates.filter((gs) => gs.location === CardLocation.Table)
         .map((gs) => gs.card) ?? []
     );
   });
@@ -49,7 +49,7 @@ export class Game {
     this.gameService.getGameById(id).subscribe({
       next: (game) => {
         this.game.set(game);
-        console.log(this.game()?.gameStates);
+        console.log(this.game()?.gameCardStates);
       },
       error: () => {
         // errorrrr....
@@ -90,13 +90,13 @@ export class Game {
               }
 
               const submittedIds = cardsToSubmit.map((c) => c.id);
-              const withoutDiscarded = currentGame.gameStates.filter(
+              const withoutDiscarded = currentGame.gameCardStates.filter(
                 gs => !submittedIds.includes(gs.card.id),
               );
 
-              const updated = [...withoutDiscarded, ...response.newGameStates];
+              const updated = [...withoutDiscarded, ...response.newGameCardStates];
 
-              return { ...currentGame, gameStates: updated };
+              return { ...currentGame, gameCardStates: updated };
             });
           } else {
             alert('Invalid set.');

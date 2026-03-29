@@ -1,6 +1,6 @@
-import { GameStateModel } from './gameState.model';
+import { GameCardStateModel } from './gameCardStateModel';
 
 export interface CheckSetResponseModel {
   isSet: boolean;
-  newGameStates: GameStateModel[];
+  newGameCardStates: GameCardStateModel[];
 }

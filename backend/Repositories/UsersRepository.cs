@@ -17,7 +17,7 @@ public class UsersRepository : GenericRepository<User>, IUsersRepository
     public async Task<List<Game>?> GetUserGames(string userId)
     {
         return await _context.Games
-            .Include(g => g.GameStates)
+            .Include(g => g.GameCardStates)
             .ThenInclude(gs => gs.Card)
             .Include(g => g.FoundSets)
             .Where(g => g.UserId == userId)

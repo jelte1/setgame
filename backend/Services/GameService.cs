@@ -1,7 +1,7 @@
 using AutoMapper;
 using backend.DTOs.Card;
 using backend.DTOs.Game;
-using backend.Dtos.GameState;
+using backend.Dtos.GameCardState;
 using backend.Entities;
 using backend.Interfaces;
 
@@ -11,16 +11,16 @@ public class GameService : IGameService
 {
     private readonly IGamesRepository _gamesRepository;
     private readonly ICardsRepository _cardsRepository;
-    private readonly IGameStatesRepository _gameStatesRepository;
+    private readonly IGameCardStatesRepository _gameCardStatesRepository;
     private readonly IFoundSetsRepository _foundSetRepository;
     private readonly ISetValidationService _setValidationService;
     private readonly IMapper _mapper;
     
-    public GameService(IGamesRepository gamesRepository, IGameStatesRepository gameStatesRepository, ICardsRepository cardsRepository, IFoundSetsRepository foundSetsRepository, ISetValidationService setValidationService, IMapper mapper)
+    public GameService(IGamesRepository gamesRepository, IGameCardStatesRepository gameCardStatesRepository, ICardsRepository cardsRepository, IFoundSetsRepository foundSetsRepository, ISetValidationService setValidationService, IMapper mapper)
     {
         _gamesRepository = gamesRepository;
         _cardsRepository = cardsRepository;
-        _gameStatesRepository = gameStatesRepository;
+        _gameCardStatesRepository = gameCardStatesRepository;
         _foundSetRepository = foundSetsRepository;
         _setValidationService = setValidationService;
         _mapper = mapper;
@@ -49,10 +49,10 @@ public class GameService : IGameService
 
         var orderedCards = tableCards.Concat(remainingCards).ToList();
 
-        var gameStates = new List<GameState>();
+        var gameCardStates = new List<GameCardState>();
         for (int i = 0; i < orderedCards.Count; i++)
         {
-            gameStates.Add(new GameState
+            gameCardStates.Add(new GameCardState
             {
                 GameId = game.Id,
                 CardId = orderedCards[i].Id,
@@ -61,8 +61,8 @@ public class GameService : IGameService
             });
         }
 
-        await _gameStatesRepository.AddRangeAsync(gameStates);
-        await _gameStatesRepository.SaveChangesAsync();
+        await _gameCardStatesRepository.AddRangeAsync(gameCardStates);
+        await _gameCardStatesRepository.SaveChangesAsync();
 
         return game;
     }
@@ -80,7 +80,7 @@ public class GameService : IGameService
     //     
     //     var shuffled = cards.OrderBy(_ => Guid.NewGuid()).ToList();
     //     
-    //     var gameStates = new List<GameState>();
+    //     var gameCardStates = new List<GameCardState=>();
     //     for (int i = 0; i < shuffled.Count; i++)
     //     {
     //         var gameState = new GameState
@@ -122,7 +122,7 @@ public class GameService : IGameService
         
         var cardList = checkSetDto.ToList();
         
-        var cardStates = game.GameStates
+        var cardStates = game.GameCardStates
             .Where(gs => cardList.Contains(gs.CardId) && gs.Location == CardLocation.Table)
             .Select(gs => gs.Card)
             .ToList();
@@ -156,12 +156,12 @@ public class GameService : IGameService
         }
         
         // discard the cards
-        foreach (var gs in game.GameStates.Where(gs => cardList.Contains(gs.CardId)))
+        foreach (var gs in game.GameCardStates.Where(gs => cardList.Contains(gs.CardId)))
         {
             gs.Location = CardLocation.Discarded;
-            await _gameStatesRepository.UpdateAsync(gs); //??????????????????????????????????????????????????
+            await _gameCardStatesRepository.UpdateAsync(gs); //??????????????????????????????????????????????????
         }
-        await _gameStatesRepository.SaveChangesAsync();
+        await _gameCardStatesRepository.SaveChangesAsync();
         
         // save the found set
         var foundSet = new FoundSet()
@@ -175,19 +175,19 @@ public class GameService : IGameService
         await _foundSetRepository.AddAsync(foundSet);
         await _foundSetRepository.SaveChangesAsync();
         
-        var newGameStates = await DrawCards(game);
+        var newGameCardStates = await DrawCards(game);
 
         return new CheckSetResponseDto
         {
             IsSet = true,
-            NewGameStates = _mapper.Map<List<GetGameStateDto>>(newGameStates)
+            NewGameCardStates = _mapper.Map<List<GetGameCardStateDto>>(newGameCardStates)
         };
 
     }
     
-    public async Task<List<GameState>> DrawCards(Game game)
+    public async Task<List<GameCardState>> DrawCards(Game game)
     {
-        var cards = game.GameStates
+        var cards = game.GameCardStates
             .Where(gs => gs.Location == CardLocation.Deck)
             .OrderBy(gs => gs.Order)
             .Take(3)
@@ -196,9 +196,9 @@ public class GameService : IGameService
         foreach (var gs in cards)
         {
             gs.Location = CardLocation.Table;
-            await _gameStatesRepository.UpdateAsync(gs);
+            await _gameCardStatesRepository.UpdateAsync(gs);
         }
-        await _gameStatesRepository.SaveChangesAsync();
+        await _gameCardStatesRepository.SaveChangesAsync();
         
         return cards; 
     }

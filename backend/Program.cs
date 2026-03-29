@@ -40,7 +40,7 @@ builder.Services.AddScoped<ICardsRepository, CardsRepository>();
 builder.Services.AddScoped<IAuthManager, AuthManager>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IGamesRepository, GamesRepository>();
-builder.Services.AddScoped<IGameStatesRepository, GameStatesRepository>();
+builder.Services.AddScoped<IGameCardStatesRepository, GameCardStatesRepository>();
 builder.Services.AddScoped<IFoundSetsRepository, FoundSetsRepository>();
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<ISetValidationService, SetValidationService>();
