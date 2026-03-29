@@ -25,7 +25,6 @@ public class GameService : IGameService
         _setValidationService = setValidationService;
         _mapper = mapper;
     }
-    
     public async Task<Game> CreateGameAsync(string userId)
     {
         var game = new Game
@@ -35,41 +34,82 @@ public class GameService : IGameService
         };
         await _gamesRepository.AddAsync(game);
         await _gamesRepository.SaveChangesAsync();
-        
+
         var cards = await _cardsRepository.GetAllAsync();
-        
-        var shuffled = cards.OrderBy(_ => Guid.NewGuid()).ToList();
-        
-        var gameStates = new List<GameState>();
-        for (int i = 0; i < shuffled.Count; i++)
-        {
-            var gameState = new GameState
-            {
-                GameId = game.Id,
-                CardId = shuffled[i].Id,
-                Location = CardLocation.Deck,
-                Order = i
-            };
-            await _gameStatesRepository.AddAsync(gameState);
-            gameStates.Add(gameState);
-        }
-        await _gameStatesRepository.SaveChangesAsync();
-        
-        var first12 = gameStates
-            .OrderBy(gs => gs.Order)
-            .Take(12)
+
+        // Temp: fixed card order for testing — lots of sets available
+        var fixedTableIds = new List<int> { 19, 23, 27, 1, 43, 76, 13, 15, 20, 8, 31, 54 };
+        var tableCards = fixedTableIds
+            .Select(id => cards.First(c => c.Id == id))
+            .ToList();
+        var remainingCards = cards
+            .Where(c => !fixedTableIds.Contains(c.Id))
+            .OrderBy(_ => Guid.NewGuid())
             .ToList();
 
-        foreach (var gs in first12)
+        var orderedCards = tableCards.Concat(remainingCards).ToList();
+
+        var gameStates = new List<GameState>();
+        for (int i = 0; i < orderedCards.Count; i++)
         {
-            gs.Location = CardLocation.Table;
-            await _gameStatesRepository.UpdateAsync(gs);
+            gameStates.Add(new GameState
+            {
+                GameId = game.Id,
+                CardId = orderedCards[i].Id,
+                Location = i < 12 ? CardLocation.Table : CardLocation.Deck,
+                Order = i
+            });
         }
-        
+
+        await _gameStatesRepository.AddRangeAsync(gameStates);
         await _gameStatesRepository.SaveChangesAsync();
 
         return game;
     }
+    // public async Task<Game> CreateGameAsync(string userId)
+    // {
+    //     var game = new Game
+    //     {
+    //         UserId = userId,
+    //         CreatedAt = DateTime.Now
+    //     };
+    //     await _gamesRepository.AddAsync(game);
+    //     await _gamesRepository.SaveChangesAsync();
+    //     
+    //     var cards = await _cardsRepository.GetAllAsync();
+    //     
+    //     var shuffled = cards.OrderBy(_ => Guid.NewGuid()).ToList();
+    //     
+    //     var gameStates = new List<GameState>();
+    //     for (int i = 0; i < shuffled.Count; i++)
+    //     {
+    //         var gameState = new GameState
+    //         {
+    //             GameId = game.Id,
+    //             CardId = shuffled[i].Id,
+    //             Location = CardLocation.Deck,
+    //             Order = i
+    //         };
+    //         await _gameStatesRepository.AddAsync(gameState);
+    //         gameStates.Add(gameState);
+    //     }
+    //     await _gameStatesRepository.SaveChangesAsync();
+    //     
+    //     var first12 = gameStates
+    //         .OrderBy(gs => gs.Order)
+    //         .Take(12)
+    //         .ToList();
+    //
+    //     foreach (var gs in first12)
+    //     {
+    //         gs.Location = CardLocation.Table;
+    //         await _gameStatesRepository.UpdateAsync(gs);
+    //     }
+    //     
+    //     await _gameStatesRepository.SaveChangesAsync();
+    //
+    //     return game;
+    // }
     
     public async Task<CheckSetResponseDto> CheckSet(int gameId, CheckSetDto checkSetDto)
     {
@@ -119,8 +159,9 @@ public class GameService : IGameService
         foreach (var gs in game.GameStates.Where(gs => cardList.Contains(gs.CardId)))
         {
             gs.Location = CardLocation.Discarded;
-            await _gameStatesRepository.UpdateAsync(gs);
+            await _gameStatesRepository.UpdateAsync(gs); //??????????????????????????????????????????????????
         }
+        await _gameStatesRepository.SaveChangesAsync();
         
         // save the found set
         var foundSet = new FoundSet()
@@ -132,6 +173,7 @@ public class GameService : IGameService
         };
         
         await _foundSetRepository.AddAsync(foundSet);
+        await _foundSetRepository.SaveChangesAsync();
         
         var newGameStates = await DrawCards(game);
 
@@ -156,6 +198,7 @@ public class GameService : IGameService
             gs.Location = CardLocation.Table;
             await _gameStatesRepository.UpdateAsync(gs);
         }
+        await _gameStatesRepository.SaveChangesAsync();
         
         return cards; 
     }

@@ -34,6 +34,7 @@ public class GamesRepository : GenericRepository<Game>, IGamesRepository
     {
         return await _context.Games
             .Include(g => g.GameStates)
+                .ThenInclude(gs => gs.Card)
             .FirstOrDefaultAsync(g => g.Id == id);
     }
     

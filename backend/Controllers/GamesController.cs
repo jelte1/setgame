@@ -113,12 +113,14 @@ public class GamesController : ControllerBase
         return Ok(_mapper.Map<GetUserDto>(user));
     }
     
-    // POST: /api/Games/1/CheckSet
-    [HttpPost("{id}/CheckSet")]
+    // POST: /api/Games/1/checkSet
+    [HttpPost("{id}/checkset")]
     [Authorize]
     public async Task<ActionResult<CheckSetResponseDto>> CheckSet(int id, [FromBody] CheckSetDto checkSetDto)
     {
         var game = await _gamesRepository.GetGameWithStatesAsync(id);
+
+        Console.WriteLine($"Game ID: {checkSetDto.Card1Id}, {checkSetDto.Card2Id}, {checkSetDto.Card3Id}");
 
         if (game == null)
         {
