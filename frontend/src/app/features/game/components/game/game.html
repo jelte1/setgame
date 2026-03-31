@@ -5,7 +5,9 @@
         <h1>Game Details</h1>
         <button [routerLink]="['/games']">Back to overview</button>
       </div>
-      <p>Created At: {{ currentGame.createdAt }}</p>
+      <p>Created At: {{ currentGame.createdAt | refactorDate }}</p>
+      <p>Amount of sets found: {{ currentGame.foundSets.length }}</p>
+      <p>Amount of sets that can be found in deck: {{ currentGame.possibleSetsCount }}</p>
 
       <app-board [cards]="tableCards()" [selectedCards]="selectedCards()" (cardClicked)="selectCard($event)"/>
     </div>

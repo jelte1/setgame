@@ -15,7 +15,6 @@ export class Board {
   cardClicked = output<CardModel>();
 
   ngOnInit() {
-    console.log(this.cards());
   }
 
   isSelected(card: CardModel): boolean {

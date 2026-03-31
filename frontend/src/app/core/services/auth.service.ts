@@ -44,7 +44,24 @@ export class AuthService extends BaseApiService {
   }
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('token');
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      return false;
+    }
+
+    try {
+      // Decode the JWT token to check its expiration date
+      const payload = JSON.parse(atob(token.split('.')[1]));
+
+      if (payload.exp * 1000 > Date.now()) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch {
+      return false;
+    }
   }
 
   getUserId(): string | null {

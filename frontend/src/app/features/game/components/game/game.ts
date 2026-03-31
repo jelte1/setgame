@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { GameModel } from '../../../../core/models/game.model';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -7,11 +7,12 @@ import { CardLocation } from '../../../../core/models/gameCardStateModel';
 import { Board } from '../board/board';
 import { CardModel } from '../../../../core/models/card.model';
 import { SET_SIZE } from '../../../../core/constants/constants';
+import { RefactorDatePipe } from '../../../../core/pipes/refactorDate.pipe';
 
 @Component({
   selector: 'app-game',
   standalone: true,
-  imports: [Board, RouterLink],
+  imports: [Board, RouterLink, RefactorDatePipe],
   templateUrl: './game.html',
   styleUrl: './game.css',
 })
@@ -49,7 +50,6 @@ export class Game {
     this.gameService.getGameById(id).subscribe({
       next: (game) => {
         this.game.set(game);
-        console.log(this.game()?.gameCardStates);
       },
       error: () => {
         // errorrrr....
@@ -78,25 +78,30 @@ export class Game {
   submitSet() {
     const cardsToSubmit = this.selectedCards();
 
-    this.gameService.checkSet(this.id, cardsToSubmit[0].id, cardsToSubmit[1].id, cardsToSubmit[2].id)
+    this.gameService
+      .checkSet(this.id, cardsToSubmit[0].id, cardsToSubmit[1].id, cardsToSubmit[2].id)
       .subscribe({
         next: (response) => {
           if (response.isSet) {
-            alert("bingo!");
+            alert('bingo!');
             this.game.update((currentGame) => {
-
               if (!currentGame) {
-                throw new Error("game not loaded");
+                throw new Error('game not loaded');
               }
 
-              const submittedIds = cardsToSubmit.map((c) => c.id);
-              const withoutDiscarded = currentGame.gameCardStates.filter(
-                gs => !submittedIds.includes(gs.card.id),
+              const cardIdsToDiscard = [ response.foundSet.card1.id, response.foundSet.card2.id, response.foundSet.card3.id ];
+
+              const gameCardStatesWithoutDiscarded = currentGame.gameCardStates.filter(
+                gcs => !cardIdsToDiscard.includes(gcs.card.id)
               );
 
-              const updated = [...withoutDiscarded, ...response.newGameCardStates];
+              const updatedGameCardStates = [...gameCardStatesWithoutDiscarded, ...response.newGameCardStates];
+              const updatedFoundSets = [...currentGame.foundSets, response.foundSet];
 
-              return { ...currentGame, gameCardStates: updated };
+              return { ...currentGame,
+                gameCardStates: updatedGameCardStates,
+                foundSets: updatedFoundSets,
+              };
             });
           } else {
             alert('Invalid set.');

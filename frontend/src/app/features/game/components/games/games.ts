@@ -2,10 +2,11 @@ import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { GameService } from '../../../../core/services/game.service';
 import { BaseGameModel } from '../../../../core/models/baseGame.model';
+import { RefactorDatePipe } from '../../../../core/pipes/refactorDate.pipe';
 
 @Component({
   selector: 'app-games',
-  imports: [RouterLink],
+  imports: [RouterLink, RefactorDatePipe],
   templateUrl: './games.html',
   styleUrl: './games.css',
 })

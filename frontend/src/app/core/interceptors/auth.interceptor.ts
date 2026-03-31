@@ -1,9 +1,9 @@
 import { HttpHandlerFn, HttpRequest } from '@angular/common/http';
-import { EXCLUDED_URLS } from '../constants/constants';
+import { INTERCEPTOR_EXCLUDED_URLS } from '../constants/constants';
 
 export function authInterceptor(request: HttpRequest<unknown>, next: HttpHandlerFn) {
 
-  const isExcluded = EXCLUDED_URLS.some(url => request.url.includes(url));
+  const isExcluded = INTERCEPTOR_EXCLUDED_URLS.some(url => request.url.includes(url));
 
   if (isExcluded) {
     return next(request);

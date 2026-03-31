@@ -8,4 +8,5 @@ export interface GameModel {
   userId: string;
   gameCardStates: GameCardStateModel[];
   foundSets: FoundSetModel[];
+  possibleSetsCount: number;
 }

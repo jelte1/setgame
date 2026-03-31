@@ -5,7 +5,7 @@
     <ul>
       @for (game of games(); track game.id) {
         <li>
-          <a [routerLink]="['/games', game.id]">{{ game.createdAt }}</a>
+          <a [routerLink]="['/games', game.id]">{{ game.createdAt | refactorDate }}</a>
         </li>
       } @empty {
         <p>No games found.</p>
