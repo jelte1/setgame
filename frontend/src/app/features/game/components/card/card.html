@@ -31,6 +31,7 @@
 
 @if (card()) {
   <div class="card" [class.selected]="selected()">
+
     @for (i of amount(); track i) {
       <svg viewBox="0 0 150 95">
         <use

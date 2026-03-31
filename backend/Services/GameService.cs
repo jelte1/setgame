@@ -1,5 +1,6 @@
 using AutoMapper;
 using backend.DTOs.Card;
+using backend.Dtos.FoundSet;
 using backend.DTOs.Game;
 using backend.Dtos.GameCardState;
 using backend.Entities;
@@ -180,7 +181,8 @@ public class GameService : IGameService
         return new CheckSetResponseDto
         {
             IsSet = true,
-            NewGameCardStates = _mapper.Map<List<GetGameCardStateDto>>(newGameCardStates)
+            NewGameCardStates = _mapper.Map<List<GetGameCardStateDto>>(newGameCardStates),
+            FoundSet = _mapper.Map<GetFoundSetDto>(foundSet)
         };
 
     }

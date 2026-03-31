@@ -22,8 +22,6 @@ header h1 {
 
 header .logoutButton {
   margin-left: auto;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.8rem;
   background: #d41d1d;
   color: #efefef;
   text-decoration: none;
@@ -52,7 +50,5 @@ header .logoutButton:hover {
   header .logoutButton {
     margin-left: 0;
     text-align: center;
-    font-size: 0.8rem;
-    padding: 0.4rem 0.5rem;
   }
 }

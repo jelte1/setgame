@@ -3,7 +3,7 @@ import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest
 import { Observable, catchError, switchMap, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
-import { EXCLUDED_URLS } from '../constants/constants';
+import { INTERCEPTOR_EXCLUDED_URLS } from '../constants/constants';
 
 @Injectable()
 export class RefreshInterceptor implements HttpInterceptor {
@@ -11,7 +11,7 @@ export class RefreshInterceptor implements HttpInterceptor {
   constructor(private authService: AuthService, private router: Router) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const isExcluded = EXCLUDED_URLS.some((url) => req.url.includes(url));
+    const isExcluded = INTERCEPTOR_EXCLUDED_URLS.some((url) => req.url.includes(url));
 
     if (isExcluded) {
       return next.handle(req);

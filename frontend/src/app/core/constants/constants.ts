@@ -1,4 +1,4 @@
-export const EXCLUDED_URLS = [
+export const INTERCEPTOR_EXCLUDED_URLS = [
   '/api/users/login',
   '/api/users/refreshtoken'
 ];

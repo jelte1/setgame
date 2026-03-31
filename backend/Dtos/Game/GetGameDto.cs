@@ -17,4 +17,6 @@ public class GetGameDto
     public ICollection<GetGameCardStateDto> GameCardStates { get; set; } = new List<GetGameCardStateDto>();
 
     public ICollection<GetFoundSetDto> FoundSets { get; set; } = new List<GetFoundSetDto>();
+    
+    public int PossibleSetsCount { get; set; }
 }
