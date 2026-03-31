@@ -27,6 +27,7 @@ header .logoutButton {
   text-decoration: none;
   border-radius: 4px;
   white-space: nowrap;
+  padding: 0.4rem;
 }
 header .logoutButton:hover {
   background: #a31616;

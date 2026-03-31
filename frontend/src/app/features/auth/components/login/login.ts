@@ -15,16 +15,17 @@ export class Login {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  // username = signal('');
-  // password = signal('');
   username = '';
   password = '';
+  loading = false;
 
   onLogin() {
     if (!this.username || !this.password) {
       // feedback for user....
       return;
     }
+
+    this.loading = true;
 
     this.authService.login(this.username, this.password).subscribe({
       next: () => {
@@ -33,6 +34,7 @@ export class Login {
       error: (err) => {
         // feedback for user....
         console.error('Invalid username or password.', err);
+        this.loading = false;
       },
     });
   }

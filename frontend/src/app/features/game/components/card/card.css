@@ -10,6 +10,7 @@
   cursor: pointer;
   box-sizing: border-box;
   min-width: 0;
+  z-index: 100;
 }
 
 .card:hover {
@@ -17,31 +18,8 @@
   box-shadow: 0 0 8px rgba(74, 144, 226, 0.6);
 }
 
-
 .card.selected {
   border-color: #4a90e2;
   box-shadow: 0 0 8px rgb(0, 117, 255);
   transition: box-shadow 0.25s;
 }
-
-/*.shape.red {*/
-/*  stroke: red;*/
-/*  fill: red;*/
-/*}*/
-/*.shape.purple {*/
-/*  stroke: purple;*/
-/*  fill: purple;*/
-/*}*/
-/*.shape.green {*/
-/*  stroke: green;*/
-/*  fill: green;*/
-/*}*/
-/*.shape.solid {*/
-/*}*/
-/*.shape.empty {*/
-/*  fill: none;*/
-/*  stroke-width: 3;*/
-/*}*/
-/*.shape.striped {*/
-/*  stroke-width: 2;*/
-/*}*/

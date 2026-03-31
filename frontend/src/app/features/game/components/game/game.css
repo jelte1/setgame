@@ -25,6 +25,7 @@
   border-radius: 4px;
   white-space: nowrap;
   border: none;
+  padding: 0.4rem;
 }
 .miniContainer button:hover {
   background: #1665c1;

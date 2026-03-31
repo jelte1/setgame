@@ -65,8 +65,7 @@ public class GamesController : ControllerBase
     // [Authorize]
     public async Task<ActionResult<GetGameDto>> PostGame()
     {
-        // var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var userId = "483811d3-be1a-4c55-b69e-e7d03414e8b5";
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (string.IsNullOrEmpty(userId))
         {

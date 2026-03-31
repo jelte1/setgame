@@ -20,3 +20,15 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+.createGameButton {
+  background-color: #0caf39;
+  color: white;
+  border: none;
+  padding: 0.4rem;
+  border-radius: 0.4rem;
+}
+.createGameButton:hover {
+  background-color: #0a7022;
+  cursor: pointer;
+}

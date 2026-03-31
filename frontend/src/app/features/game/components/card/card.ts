@@ -1,6 +1,5 @@
 import { Component, computed, input } from '@angular/core';
 import { CardModel, Color, Filling, Shape } from '../../../../core/models/card.model';
-import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-card',
@@ -12,28 +11,28 @@ export class Card {
   card = input.required<CardModel>();
   selected = input(false);
 
+  getCardShape(): string {
+    return Shape[this.card().shape];
+  }
+
+  getCardColor(): string {
+    return Color[this.card().color].toLowerCase();
+  }
+
+  getCardFilling(): string {
+    if (this.card().filling === Filling.Solid) {
+      return this.getCardColor();
+    } else if (this.card().filling === Filling.Striped) {
+      return `url(#stripes-${this.getCardColor()})`;
+    }
+
+    // When filling is Empty or null, return 'none' to indicate no fill
+    return 'none';
+  }
+
   amount = computed(() =>
     Array(this.card().amount)
       .fill(0)
       .map((_, i) => i),
   );
-
-  shapeHref = computed(() => `#card_${Shape[this.card().shape]}`);
-
-  strokeValue = computed(() => Color[this.card().color].toLowerCase());
-
-  fillValue = computed(() => {
-    const color = Color[this.card().color].toLowerCase();
-    switch (this.card().filling) {
-      case Filling.Solid:
-        return color;
-      case Filling.Empty:
-        return 'none';
-      case Filling.Striped:
-        return `url(#stripes-${color})`;
-    }
-  });
-
-  ngOnInit() {
-  }
 }

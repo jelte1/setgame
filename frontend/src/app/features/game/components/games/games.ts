@@ -28,4 +28,13 @@ export class Games {
       error: (err) => console.error('Error loading games:', err),
     });
   }
+
+  createGame() {
+    this.gameService.createGame().subscribe({
+      next: (game) => {
+        this.games.update((games) => [...games, game]);
+      },
+      error: (err) => console.error('Error creating game:', err),
+    });
+  }
 }
