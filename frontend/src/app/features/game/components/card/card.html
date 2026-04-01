@@ -1,6 +1,6 @@
 @if (card()) {
-  <div class="card" [class.selected]="selected()">
-    @for (i of amount(); track i) {
+  <div class="card" [class.hinted]="hinted()" [class.selected]="selected()">
+    @for (amount of getCardAmount(); track amount) {
       <svg viewBox="0 0 150 95">
         <use
           [attr.href]="'#' + getCardShape()"

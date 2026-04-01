@@ -1,9 +1,9 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, ElementRef, inject, Renderer2, signal } from '@angular/core';
 import { GameModel } from '../../../../core/models/game.model';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { GameService } from '../../../../core/services/game.service';
-import { CardLocation } from '../../../../core/models/gameCardStateModel';
+import { CardLocation } from '../../../../core/models/gameCardState.model';
 import { Board } from '../board/board';
 import { CardModel } from '../../../../core/models/card.model';
 import { SET_SIZE } from '../../../../core/constants/constants';
@@ -17,12 +17,19 @@ import { RefactorDatePipe } from '../../../../core/pipes/refactorDate.pipe';
   styleUrl: './game.css',
 })
 export class Game {
+  constructor(
+    private renderer: Renderer2,
+    private el: ElementRef,
+  ) {}
+
   private route = inject(ActivatedRoute);
   private gameService = inject(GameService);
 
   id!: number;
   private routeSub!: Subscription;
+
   selectedCards = signal(<CardModel[]>[]);
+  hintedCards = signal<number[]>([]);
 
   game = signal<GameModel | null>(null);
 
@@ -33,6 +40,13 @@ export class Game {
         .map((gs) => gs.card) ?? []
     );
   });
+
+  cardsInDeck = computed(() => {
+    return (this.game()
+      ?.gameCardStates.filter((gs) => gs.location === CardLocation.Deck)
+      .map((gs) => gs.card) ?? []
+    );
+  })
 
   ngOnInit(): void {
     this.routeSub = this.route.params.subscribe((params) => {
@@ -83,24 +97,34 @@ export class Game {
       .subscribe({
         next: (response) => {
           if (response.isSet) {
-            alert('bingo!');
+            // alert('bingo!');
             this.game.update((currentGame) => {
               if (!currentGame) {
                 throw new Error('game not loaded');
               }
 
-              const cardIdsToDiscard = [ response.foundSet.card1.id, response.foundSet.card2.id, response.foundSet.card3.id ];
+              const cardIdsToDiscard = [
+                response.foundSet.card1.id,
+                response.foundSet.card2.id,
+                response.foundSet.card3.id,
+              ];
 
               const gameCardStatesWithoutDiscarded = currentGame.gameCardStates.filter(
-                gcs => !cardIdsToDiscard.includes(gcs.card.id)
+                (gcs) => !cardIdsToDiscard.includes(gcs.card.id),
               );
 
-              const updatedGameCardStates = [...gameCardStatesWithoutDiscarded, ...response.newGameCardStates];
+              const updatedGameCardStates = [
+                ...gameCardStatesWithoutDiscarded,
+                ...response.newGameCardStates,
+              ];
               const updatedFoundSets = [...currentGame.foundSets, response.foundSet];
+              const updatedPossibleSetsCount = response.possibleSetsCount;
 
-              return { ...currentGame,
+              return {
+                ...currentGame,
                 gameCardStates: updatedGameCardStates,
                 foundSets: updatedFoundSets,
+                possibleSetsCount: updatedPossibleSetsCount,
               };
             });
           } else {
@@ -113,5 +137,20 @@ export class Game {
           this.selectedCards.set([]);
         },
       });
+  }
+
+  showHint() {
+    this.gameService.getHint(this.id).subscribe({
+      next: (hint) => {
+        this.hintedCards.set([hint.card1Id, hint.card2Id, hint.card3Id]);
+
+        setTimeout(() => {
+          this.hintedCards.set([]);
+        }, 3000);
+      },
+      error: () => {
+        alert('Error getting hint.');
+      },
+    });
   }
 }

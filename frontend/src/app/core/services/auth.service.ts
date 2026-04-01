@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { BaseApiService } from './base-api.service';
 import { Observable, tap } from 'rxjs';
-import { AuthResponseModel } from '../models/authResponse.model';
+import { AuthModel } from '../models/auth.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService extends BaseApiService {
 
-  login(username: string, password: string): Observable<AuthResponseModel> {
+  login(username: string, password: string): Observable<AuthModel> {
     return this.http
-      .post<AuthResponseModel>(`${this.apiUrl}/users/login`, {
+      .post<AuthModel>(`${this.apiUrl}/users/login`, {
         userName: username,
         passwordHash: password,
       })
@@ -21,9 +21,9 @@ export class AuthService extends BaseApiService {
       );
   }
 
-  refreshToken(refreshToken: string): Observable<AuthResponseModel> {
+  refreshToken(refreshToken: string): Observable<AuthModel> {
     return this.http
-      .post<AuthResponseModel>(`${this.apiUrl}/users/refreshtoken`, {
+      .post<AuthModel>(`${this.apiUrl}/users/refreshtoken`, {
         userId: localStorage.getItem('userId'),
         token: localStorage.getItem('token'),
         refreshToken: refreshToken,

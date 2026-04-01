@@ -5,11 +5,44 @@
         <h1>Game Details</h1>
         <button [routerLink]="['/games']">Back to overview</button>
       </div>
-      <p>Created At: {{ currentGame.createdAt | refactorDate }}</p>
-      <p>Amount of sets found: {{ currentGame.foundSets.length }}</p>
-      <p>Amount of sets that can be found in deck: {{ currentGame.possibleSetsCount }}</p>
 
-      <app-board [cards]="tableCards()" [selectedCards]="selectedCards()" (cardClicked)="selectCard($event)"/>
+      <div class="stats">
+        <div class="stat">
+          <span class="label">Created at</span>
+          <span class="value">{{ currentGame.createdAt | refactorDate }}</span>
+        </div>
+
+        <div class="stat">
+          <span class="label">Sets Found</span>
+          <span class="value">{{ currentGame.foundSets.length }}</span>
+        </div>
+
+        <div class="stat">
+          <span class="label">Possible Sets in deck</span>
+          <span class="value">{{ currentGame.possibleSetsCount }}</span>
+        </div>
+
+        <div class="stat">
+          <span class="label">Remaining cards in backlog deck</span>
+          <span class="value">{{ cardsInDeck().length }}</span>
+        </div>
+
+        <div class="stat">
+          <span class="label">Cards on the table</span>
+          <span class="value">{{ tableCards().length }}</span>
+        </div>
+
+        <div class="stat">
+          <span class="label">Finished</span>
+          <span class="value">
+            {{ currentGame.isFinished ? 'Yes' : 'No' }}
+          </span>
+        </div>
+      </div>
+
+      <button class="showHint" (click)="showHint()">Hint</button>
+
+      <app-board [cards]="tableCards()" [selectedCards]="selectedCards()" [hintedCards]="hintedCards()" (cardClicked)="selectCard($event)"/>
     </div>
   } @else {
     <div class="container">
