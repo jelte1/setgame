@@ -6,4 +6,5 @@ export interface CheckSetModel {
   newGameCardStates: GameCardStateModel[];
   foundSet: FoundSetModel;
   possibleSetsCount: number;
+  isFinished: boolean;
 }

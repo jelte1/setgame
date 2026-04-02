@@ -9,4 +9,6 @@ public class CheckSetResponseDto
     public bool IsSet { get; set; }
     public ICollection<GetGameCardStateDto> NewGameCardStates { get; set; } = new List<GetGameCardStateDto>();
     public GetFoundSetDto? FoundSet { get; set; }
+    public int PossibleSetsCount { get; set; }
+    public bool IsFinished { get; set; }
 }

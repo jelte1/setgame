@@ -42,9 +42,10 @@ export class Game {
   });
 
   cardsInDeck = computed(() => {
-    return (this.game()
-      ?.gameCardStates.filter((gs) => gs.location === CardLocation.Deck)
-      .map((gs) => gs.card) ?? []
+    return (
+      this.game()
+        ?.gameCardStates.filter((gs) => gs.location === CardLocation.Deck)
+        .map((gs) => gs.card) ?? []
     );
   })
 
@@ -72,6 +73,11 @@ export class Game {
   }
 
   selectCard(card: CardModel) {
+
+    if (this.game()?.isFinished) {
+      return;
+    }
+
     const currentSelectedCards = this.selectedCards();
     const isSelected = currentSelectedCards.some((c) => c.id === card.id);
 
@@ -97,7 +103,7 @@ export class Game {
       .subscribe({
         next: (response) => {
           if (response.isSet) {
-            // alert('bingo!');
+            alert('bingo!');
             this.game.update((currentGame) => {
               if (!currentGame) {
                 throw new Error('game not loaded');
@@ -125,11 +131,19 @@ export class Game {
                 gameCardStates: updatedGameCardStates,
                 foundSets: updatedFoundSets,
                 possibleSetsCount: updatedPossibleSetsCount,
+                isFinished: response.isFinished,
               };
             });
           } else {
             alert('Invalid set.');
           }
+
+          // BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD
+          if (response.isSet) {
+            this.loadGame(this.id);
+          }
+          // BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD
+
           this.selectedCards.set([]);
         },
         error: () => {
@@ -140,6 +154,12 @@ export class Game {
   }
 
   showHint() {
+
+    if (this.game()?.isFinished) {
+      alert('Game is finished. No hints available.');
+      return;
+    }
+
     this.gameService.getHint(this.id).subscribe({
       next: (hint) => {
         this.hintedCards.set([hint.card1Id, hint.card2Id, hint.card3Id]);
