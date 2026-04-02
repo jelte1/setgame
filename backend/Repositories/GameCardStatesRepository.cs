@@ -18,4 +18,10 @@ public class GameCardStatesRepository : GenericRepository<GameCardState>, IGameC
         await _context.AddRangeAsync(gameCardStates);
         return gameCardStates;
     }
+    
+    public async Task UpdateRangeAsync(IEnumerable<GameCardState> entities)
+    {
+        _context.GameCardStates.UpdateRange(entities);
+        await _context.SaveChangesAsync();
+    }
 }

@@ -29,19 +29,20 @@ public class SetValidationService : ISetValidationService
     {
         var result = new List<(Card, Card, Card)>();
 
-        // Get all combinations of 3 cards and check for set
+        // Get all combinations of 3 cards and check for set by looping through 
         for (int i = 0; i < tableCards.Count; i++)
         {
-            // add one to prevent 
+            // add one to prevent checking the same card again and to ensure we get unique combinations
             for (int j = i + 1; j < tableCards.Count; j++)
             {
+                // again add one to prevent checking same card
                 for (int k = j + 1; k < tableCards.Count; k++)
                 {
                     var card1 = tableCards[i];
                     var card2 = tableCards[j];
                     var card3 = tableCards[k];
 
-                    if (IsValidSet(tableCards[i], tableCards[j], tableCards[k]))
+                    if (IsValidSet(card1, card2, card3))
                     {
                         result.Add((card1, card2, card3));
                     }
@@ -55,7 +56,13 @@ public class SetValidationService : ISetValidationService
     public (Card, Card, Card)? FindHint(List<Card> tableCards)
     {
         var allSets = FindAllSets(tableCards);
-        return allSets.FirstOrDefault();
+        
+        if (!allSets.Any())
+        {
+            return null;
+        }
+        
+        return allSets.First();
     }
 
     // public EnsureSetsPossible(List<Card> tableCards)

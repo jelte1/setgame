@@ -40,29 +40,29 @@ public class GamesController : ControllerBase
         {
             return NotFound();
         }
-
-        Console.WriteLine("---------------------------------------------------");
+        
+        // check that gamne belongs to user (from token)
+        if (game.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier))
+        {
+            return Forbid();
+        }
 
         var tableCards = game.GameCardStates
             .Where(gs => gs.Location == CardLocation.Table)
             .Select(gs => gs.Card)
             .ToList();
 
-        Console.WriteLine(tableCards);
-
-        int possibleSetsCount = _setValidationService.FindAllSets(tableCards).Count;
-
-        Console.WriteLine(possibleSetsCount);
+        var possibleSetsCount = _setValidationService.FindAllSets(tableCards).Count;
 
         var getGameDto = _mapper.Map<GetGameDto>(game);
         getGameDto.PossibleSetsCount = possibleSetsCount;
 
-        return getGameDto;
+        return Ok(getGameDto);
     }
 
     // POST: api/Games
     [HttpPost]
-    // [Authorize]
+    [Authorize]
     public async Task<ActionResult<GetGameDto>> PostGame()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -138,8 +138,6 @@ public class GamesController : ControllerBase
     {
         var game = await _gamesRepository.GetGameWithStatesAsync(id);
 
-        Console.WriteLine($"Game ID: {checkSetDto.Card1Id}, {checkSetDto.Card2Id}, {checkSetDto.Card3Id}");
-
         if (game == null)
         {
             return NotFound();
@@ -155,6 +153,41 @@ public class GamesController : ControllerBase
         var isValidSet = await _gamesService.CheckSet(id, checkSetDto);
 
         return Ok(isValidSet);
+    }
+    
+    // GET: /api/Games/1/hint
+    [HttpGet("{id}/hint")]
+    [Authorize]
+    public async Task<ActionResult<GetHintDto>> GetHint(int id)
+    {
+        var game = await _gamesRepository.GetGameWithStatesAsync(id);
+
+        if (game == null)
+        {
+            return NotFound();
+        }
+        
+        // check that gamne belongs to user (from token)
+        if (game.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier))
+        {
+            return Forbid();
+        }
+        
+        var set = _gamesService.GetHint(game);
+
+        if (set == null)
+        {
+            return NotFound();
+        }
+
+        var hint = new GetHintDto
+        {
+            Card1Id = set.Value.Item1.Id,
+            Card2Id = set.Value.Item2.Id,
+            Card3Id = set.Value.Item3.Id
+        };
+        
+        return Ok(hint);
     }
 
     private async Task<bool> GameExists(int id)
