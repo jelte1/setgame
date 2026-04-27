@@ -1,4 +1,4 @@
-import { Component, computed, ElementRef, inject, Renderer2, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { GameModel } from '../../../../core/models/game.model';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -17,11 +17,6 @@ import { RefactorDatePipe } from '../../../../core/pipes/refactorDate.pipe';
   styleUrl: './game.css',
 })
 export class Game {
-  constructor(
-    private renderer: Renderer2,
-    private el: ElementRef,
-  ) {}
-
   private route = inject(ActivatedRoute);
   private gameService = inject(GameService);
 
@@ -162,7 +157,7 @@ export class Game {
 
     this.gameService.getHint(this.id).subscribe({
       next: (hint) => {
-        this.hintedCards.set([hint.card1Id, hint.card2Id, hint.card3Id]);
+        this.hintedCards.set([hint.card1Id, hint.card2Id]);
 
         setTimeout(() => {
           this.hintedCards.set([]);

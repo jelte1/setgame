@@ -183,8 +183,7 @@ public class GamesController : ControllerBase
         var hint = new GetHintDto
         {
             Card1Id = set.Value.Item1.Id,
-            Card2Id = set.Value.Item2.Id,
-            Card3Id = set.Value.Item3.Id
+            Card2Id = set.Value.Item2.Id
         };
         
         return Ok(hint);
