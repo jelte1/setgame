@@ -32,3 +32,9 @@ a:hover {
   background-color: #0a7022;
   cursor: pointer;
 }
+.miniContainer {
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

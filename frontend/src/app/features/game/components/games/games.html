@@ -1,6 +1,9 @@
 <main>
   <div class="container">
-    <h1>Games</h1>
+    <div class="miniContainer">
+      <h2>Games</h2>
+      <button class="createGameButton" (click)="createGame()">Create New Game</button>
+    </div>
     <p>Your games:</p>
     <ul>
       @for (game of games(); track game.id) {
@@ -11,6 +14,5 @@
         <p>No games found.</p>
       }
     </ul>
-    <button class="createGameButton" (click)="createGame()">Create New Game</button>
   </div>
 </main>
