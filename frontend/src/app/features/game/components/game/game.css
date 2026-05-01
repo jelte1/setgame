@@ -51,20 +51,6 @@
   cursor: pointer;
 }
 
-.container .deleteGame {
-  background: #d41d1d;
-  color: #efefef;
-  border: none;
-  border-radius: 4px;
-  padding: 0.4rem 0.6rem;
-  margin: 1rem 0;
-}
-
-.container .deleteGame:hover {
-  background: #a31616;
-  cursor: pointer;
-}
-
 .miniContainer {
   margin: 0;
   display: flex;

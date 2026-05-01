@@ -8,6 +8,7 @@ import { Board } from '../board/board';
 import { CardModel } from '../../../../core/models/card.model';
 import { SET_SIZE } from '../../../../core/constants/constants';
 import { RefactorDatePipe } from '../../../../core/pipes/refactorDate.pipe';
+import { CheckSetModel } from '../../../../core/models/checkSet.model';
 
 @Component({
   selector: 'app-game',
@@ -29,20 +30,18 @@ export class Game {
   game = signal<GameModel | null>(null);
 
   tableCards = computed(() => {
-    return (
-      this.game()
+    return (this.game()
         ?.gameCardStates.filter((gs) => gs.location === CardLocation.Table)
         .map((gs) => gs.card) ?? []
     );
   });
 
   cardsInDeck = computed(() => {
-    return (
-      this.game()
+    return (this.game()
         ?.gameCardStates.filter((gs) => gs.location === CardLocation.Deck)
         .map((gs) => gs.card) ?? []
     );
-  })
+  });
 
   ngOnInit(): void {
     this.routeSub = this.route.params.subscribe((params) => {
@@ -62,13 +61,12 @@ export class Game {
         this.game.set(game);
       },
       error: () => {
-        // errorrrr....
+        console.error('Error loading game');
       },
     });
   }
 
   selectCard(card: CardModel) {
-
     if (this.game()?.isFinished) {
       return;
     }
@@ -98,47 +96,12 @@ export class Game {
       .subscribe({
         next: (response) => {
           if (response.isSet) {
+            console.log(response);
             alert('bingo!');
-            this.game.update((currentGame) => {
-              if (!currentGame) {
-                throw new Error('game not loaded');
-              }
-
-              const cardIdsToDiscard = [
-                response.foundSet.card1.id,
-                response.foundSet.card2.id,
-                response.foundSet.card3.id,
-              ];
-
-              const gameCardStatesWithoutDiscarded = currentGame.gameCardStates.filter(
-                (gcs) => !cardIdsToDiscard.includes(gcs.card.id),
-              );
-
-              const updatedGameCardStates = [
-                ...gameCardStatesWithoutDiscarded,
-                ...response.newGameCardStates,
-              ];
-              const updatedFoundSets = [...currentGame.foundSets, response.foundSet];
-              const updatedPossibleSetsCount = response.possibleSetsCount;
-
-              return {
-                ...currentGame,
-                gameCardStates: updatedGameCardStates,
-                foundSets: updatedFoundSets,
-                possibleSetsCount: updatedPossibleSetsCount,
-                isFinished: response.isFinished,
-              };
-            });
+            this.applySetResponse(response);
           } else {
             alert('Invalid set.');
           }
-
-          // BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD
-          if (response.isSet) {
-            this.loadGame(this.id);
-          }
-          // BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD
-
           this.selectedCards.set([]);
         },
         error: () => {
@@ -148,8 +111,39 @@ export class Game {
       });
   }
 
-  showHint() {
+  private applySetResponse(response: CheckSetModel) {
+    this.game.update((currentGame) => {
+      if (!currentGame) {
+        throw new Error('Game not loaded');
+      }
 
+      const discardedIds = new Set([
+        response.foundSet.card1.id,
+        response.foundSet.card2.id,
+        response.foundSet.card3.id,
+      ]);
+
+      const remainingStates = currentGame.gameCardStates.filter(
+        (gcs) => !discardedIds.has(gcs.card.id),
+      );
+
+      const newCardIds = new Set(response.newGameCardStates.map((state) => state.id));
+      const gameCardStatesWithoutNew = remainingStates.filter(
+        (gcs) =>
+          !newCardIds.has(gcs.id)
+      );
+
+      return {
+        ...currentGame,
+        gameCardStates: [...gameCardStatesWithoutNew, ...response.newGameCardStates],
+        foundSets: [...currentGame.foundSets, response.foundSet],
+        possibleSetsCount: response.possibleSetsCount,
+        isFinished: response.isFinished,
+      };
+    });
+  }
+
+  showHint() {
     if (this.game()?.isFinished) {
       alert('Game is finished. No hints available.');
       return;

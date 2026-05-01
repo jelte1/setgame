@@ -26,47 +26,7 @@ public class GameService : IGameService
         _setValidationService = setValidationService;
         _mapper = mapper;
     }
-    // public async Task<Game> CreateGameAsync(string userId)
-    // {
-    //     var game = new Game
-    //     {
-    //         UserId = userId,
-    //         CreatedAt = DateTime.Now
-    //     };
-    //     await _gamesRepository.AddAsync(game);
-    //     await _gamesRepository.SaveChangesAsync();
-    //
-    //     var cards = await _cardsRepository.GetAllAsync();
-    //
-    //     // Temp; fixed card order for testing
-    //     var fixedTableIds = new List<int> { 19, 23, 27, 1, 43, 76, 13, 15, 20, 8, 31, 54 };
-    //     var tableCards = fixedTableIds
-    //         .Select(id => cards.First(c => c.Id == id))
-    //         .ToList();
-    //     var remainingCards = cards
-    //         .Where(c => !fixedTableIds.Contains(c.Id))
-    //         .OrderBy(_ => Guid.NewGuid())
-    //         .ToList();
-    //
-    //     var orderedCards = tableCards.Concat(remainingCards).ToList();
-    //
-    //     var gameCardStates = new List<GameCardState>();
-    //     for (int i = 0; i < orderedCards.Count; i++)
-    //     {
-    //         gameCardStates.Add(new GameCardState
-    //         {
-    //             GameId = game.Id,
-    //             CardId = orderedCards[i].Id,
-    //             Location = i < 12 ? CardLocation.Table : CardLocation.Deck,
-    //             Order = i
-    //         });
-    //     }
-    //
-    //     await _gameCardStatesRepository.AddRangeAsync(gameCardStates);
-    //     await _gameCardStatesRepository.SaveChangesAsync();
-    //
-    //     return game;
-    // }
+
     public async Task<Game> CreateGameAsync(string userId)
     {
         var game = new Game
@@ -109,6 +69,8 @@ public class GameService : IGameService
         }
         
         await _gameCardStatesRepository.SaveChangesAsync();
+        
+        await CheckValidTable(game, 3);
     
         return game;
     }
@@ -180,35 +142,7 @@ public class GameService : IGameService
         await _foundSetsRepository.SaveChangesAsync();
         
         // Draw cards until the table has at least one valid set (or deck runs out)
-        var random = new Random();
-        List<GameCardState> newGameCardStates = new();
-
-        while (true)
-        {
-            if (!GetGameCardStatesByLocation(game, CardLocation.Deck).Any()) break;
-
-            newGameCardStates = await DrawCards(game);
-
-            var newTableCards = GetGameCardStatesByLocation(game, CardLocation.Table)
-                .Select(gs => gs.Card)
-                .ToList();
-
-            if (_setValidationService.FindAllSets(newTableCards).Count > 0) break;
-
-            // if no valid set then reshuffle the 3 drawn cards back into the deck
-            foreach (var gs in newGameCardStates)
-                gs.Location = CardLocation.Deck;
-
-            var allDeckCards = GetGameCardStatesByLocation(game, CardLocation.Deck);
-            var shuffledOrders = allDeckCards.Select(gs => gs.Order).OrderBy(_ => random.Next()).ToList();
-
-            for (int i = 0; i < allDeckCards.Count; i++)
-            {
-                allDeckCards[i].Order = shuffledOrders[i];
-                await _gameCardStatesRepository.UpdateAsync(allDeckCards[i]);
-            }
-            await _gameCardStatesRepository.SaveChangesAsync();
-        }
+        var newGameCardStates = await CheckValidTable(game, 3);
 
         var finalTableCards = GetGameCardStatesByLocation(game, CardLocation.Table)
             .Select(gs => gs.Card)
@@ -232,6 +166,60 @@ public class GameService : IGameService
             IsFinished = game.IsFinished
         };
 
+    }
+
+    private async Task<List<GameCardState>> CheckValidTable(Game game, int drawAmount)
+    {
+        var random = new Random();
+        List<GameCardState> drawnGameCardStates = new();
+
+        while (true)
+        {
+            var tablegameCardStates = GetGameCardStatesByLocation(game, CardLocation.Table)
+                .Select(gs => gs.Card)
+                .ToList();
+            
+            // if there is a valid set return
+            if (_setValidationService.FindAllSets(tablegameCardStates).Count > 0)
+            {
+                return drawnGameCardStates;
+            }
+            
+            // if there are no more deck cards its game end
+            if (!GetGameCardStatesByLocation(game, CardLocation.Deck).Any())
+            {
+                return drawnGameCardStates;
+            }
+
+            drawnGameCardStates = await DrawCards(game);
+
+            var newTableGameCardStates = GetGameCardStatesByLocation(game, CardLocation.Table)
+                .Select(gs => gs.Card)
+                .ToList();
+            
+            // if there is a valid set return
+            if (_setValidationService.FindAllSets(newTableGameCardStates).Count > 0)
+            {
+                return drawnGameCardStates;
+            }
+
+            // if no valid set then reshuffle the 3 drawn cards back into the deck
+            foreach (var gs in drawnGameCardStates)
+            {
+                gs.Location = CardLocation.Deck;
+            }
+            
+            // here shuffle the deck by randomizing the order of every gameStateCard
+            var allDeckCards = GetGameCardStatesByLocation(game, CardLocation.Deck);
+            var shuffled = allDeckCards.OrderBy(_ => random.Next()).ToList();
+            
+            for (int i = 0; i < shuffled.Count; i++)
+            {
+                shuffled[i].Order = i;
+                await _gameCardStatesRepository.UpdateAsync(shuffled[i]);
+            }
+            await _gameCardStatesRepository.SaveChangesAsync();
+        }
     }
     
     public async Task<List<GameCardState>> DrawCards(Game game, int amount = 3)

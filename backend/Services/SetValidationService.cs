@@ -7,14 +7,23 @@ public class SetValidationService : ISetValidationService
 {
     public bool IsValidSet(Card card1, Card card2, Card card3)
     {
-        return IsValidProperty((int)card1.Color, (int)card2.Color, (int)card3.Color)
-               && IsValidProperty((int)card1.Shape, (int)card2.Shape, (int)card3.Shape)
-               && IsValidProperty((int)card1.Filling, (int)card2.Filling, (int)card3.Filling)
-               && IsValidProperty((int)card1.Amount, (int)card2.Amount, (int)card3.Amount);
+        if (IsValidProperty((int)card1.Color, (int)card2.Color, (int)card3.Color) 
+           && 
+           IsValidProperty((int)card1.Shape, (int)card2.Shape, (int)card3.Shape) 
+           && 
+           IsValidProperty((int)card1.Filling, (int)card2.Filling, (int)card3.Filling) 
+           && 
+           IsValidProperty((int)card1.Amount, (int)card2.Amount, (int)card3.Amount))
+        {
+            return true;
+        }
+        
+        return false;
     }
 
     private bool IsValidProperty(int a, int b, int c)
     {
+        // either the specific property of every card is the same or different for all 3 cards
         if ((a == b && b == c && a == c)
             ||
             (a != b && b != c && a != c))
@@ -27,50 +36,52 @@ public class SetValidationService : ISetValidationService
 
     public List<(Card, Card, Card)> FindAllSets(List<Card> tableCards)
     {
+        // eventual results of all possible sets
         var result = new List<(Card, Card, Card)>();
-
-        // Get all combinations of 3 cards and check for set by looping through 
-        for (int i = 0; i < tableCards.Count; i++)
-        {
-            // add one to prevent checking the same card again and to ensure we get unique combinations
-            for (int j = i + 1; j < tableCards.Count; j++)
-            {
-                // again add one to prevent checking same card
-                for (int k = j + 1; k < tableCards.Count; k++)
-                {
-                    var card1 = tableCards[i];
-                    var card2 = tableCards[j];
-                    var card3 = tableCards[k];
-
-                    if (IsValidSet(card1, card2, card3))
-                    {
-                        result.Add((card1, card2, card3));
-                    }
-                }
-            }
-        }
+        // current selection of cards will be checked for if it is a set
+        var currentSelection = new List<Card>();
+        
+        // using a backtracking algorithm to get all the possible sets.
+        BacktrackCards(result, currentSelection, tableCards, 0);
 
         return result;
+    }
+
+    private void BacktrackCards(List<(Card, Card, Card)> result, List<Card> currentSelection, List<Card> cards, int index)
+    {
+        // if there are 3 cards in the current selection; check if they form a set
+        // if so that set gets added to the total result list of sets
+        if (currentSelection.Count == 3)
+        {
+            if (IsValidSet(currentSelection[0], currentSelection[1], currentSelection[2]))
+            {
+                result.Add((currentSelection[0], currentSelection[1], currentSelection[2]));
+            }
+            
+            // break out of the current path since there cant be more then 3 cards
+            return;
+        }
+        
+        // loop through all of the cards from the current index to the end of the list
+        // this goes recursively through all the possible combinations of cards
+        for (; index < cards.Count; index++)
+        {
+            // add card with current index to the selection
+            currentSelection.Add(cards[index]);
+            
+            // continue to add more cards to the selection until there are 3 cards in the selection and then check if they form a set
+            BacktrackCards(result, currentSelection, cards, index + 1);
+            
+            // remove the last card from the selection so it can try the next card in the loop. 
+            currentSelection.RemoveAt(currentSelection.Count - 1);
+        }
     }
 
     public (Card, Card, Card)? FindHint(List<Card> tableCards)
     {
         var allSets = FindAllSets(tableCards);
         
-        if (!allSets.Any())
-        {
-            return null;
-        }
-        
-        return allSets.First();
+        return allSets.FirstOrDefault();
     }
-
-    // public EnsureSetsPossible(List<Card> tableCards)
-    // {
-    //     while (FindAllSets(tableCards).Count == 0)
-    //     {
-    //         // Logic to add more cards to the table until at least one set is possible
-    //         // This would typically involve drawing cards from the deck and adding them to the table
-    //     }
-    // }
+    
 }
