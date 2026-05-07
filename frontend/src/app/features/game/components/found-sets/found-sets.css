@@ -1,0 +1,16 @@
+.board-wrapper {
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+
+.board {
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
+  border-radius: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  width: 100%;
+  max-width: 350px;
+  box-sizing: border-box;
+}

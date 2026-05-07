@@ -1,0 +1,14 @@
+<div class="found-sets">
+  <h2>Found Sets</h2>
+  <div class="board-wrapper">
+      <div class="board">
+        @for (set of foundSets().slice().reverse(); track set.id) {
+          <app-card [card]="set.card1"/>
+          <app-card [card]="set.card2"/>
+          <app-card [card]="set.card3"/>
+        } @empty {
+          <p>No sets found yet.</p>
+        }
+      </div>
+  </div>
+</div>

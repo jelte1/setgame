@@ -9,11 +9,12 @@ import { CardModel } from '../../../../core/models/card.model';
 import { SET_SIZE } from '../../../../core/constants/constants';
 import { RefactorDatePipe } from '../../../../core/pipes/refactorDate.pipe';
 import { CheckSetModel } from '../../../../core/models/checkSet.model';
+import { FoundSets } from '../found-sets/found-sets';
 
 @Component({
   selector: 'app-game',
   standalone: true,
-  imports: [Board, RouterLink, RefactorDatePipe],
+  imports: [Board, RouterLink, RefactorDatePipe, FoundSets],
   templateUrl: './game.html',
   styleUrl: './game.css',
 })
@@ -30,14 +31,16 @@ export class Game {
   game = signal<GameModel | null>(null);
 
   tableCards = computed(() => {
-    return (this.game()
+    return (
+      this.game()
         ?.gameCardStates.filter((gs) => gs.location === CardLocation.Table)
         .map((gs) => gs.card) ?? []
     );
   });
 
   cardsInDeck = computed(() => {
-    return (this.game()
+    return (
+      this.game()
         ?.gameCardStates.filter((gs) => gs.location === CardLocation.Deck)
         .map((gs) => gs.card) ?? []
     );
@@ -128,10 +131,7 @@ export class Game {
       );
 
       const newCardIds = new Set(response.newGameCardStates.map((state) => state.id));
-      const gameCardStatesWithoutNew = remainingStates.filter(
-        (gcs) =>
-          !newCardIds.has(gcs.id)
-      );
+      const gameCardStatesWithoutNew = remainingStates.filter((gcs) => !newCardIds.has(gcs.id));
 
       return {
         ...currentGame,

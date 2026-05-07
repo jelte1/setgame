@@ -103,7 +103,7 @@ public class AuthManager : IAuthManager
         }
 
         await _userManager.UpdateSecurityStampAsync(_user);
-        
+
         return null;
     }
 

@@ -43,6 +43,8 @@
       <button class="showHint" (click)="showHint()">Hint</button>
 
       <app-board [cards]="tableCards()" [selectedCards]="selectedCards()" [hintedCards]="hintedCards()" (cardClicked)="selectCard($event)"/>
+
+      <app-found-sets [foundSets]="currentGame.foundSets"/>
     </div>
   } @else {
     <div class="container">
