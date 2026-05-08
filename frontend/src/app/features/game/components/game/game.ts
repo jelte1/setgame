@@ -27,8 +27,8 @@ export class Game {
 
   selectedCards = signal(<CardModel[]>[]);
   hintedCards = signal<number[]>([]);
-
   game = signal<GameModel | null>(null);
+  loading = signal<boolean>(false);
 
   tableCards = computed(() => {
     return (
@@ -47,6 +47,7 @@ export class Game {
   });
 
   ngOnInit(): void {
+    this.loading.set(true);
     this.routeSub = this.route.params.subscribe((params) => {
       this.id = params['id'];
     });
@@ -62,9 +63,11 @@ export class Game {
     this.gameService.getGameById(id).subscribe({
       next: (game) => {
         this.game.set(game);
+        this.loading.set(false);
       },
       error: () => {
         console.error('Error loading game');
+        this.loading.set(false);
       },
     });
   }
@@ -99,7 +102,6 @@ export class Game {
       .subscribe({
         next: (response) => {
           if (response.isSet) {
-            console.log(response);
             alert('bingo!');
             this.applySetResponse(response);
           } else {

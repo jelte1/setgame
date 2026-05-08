@@ -15,8 +15,10 @@ export class Games {
   private router = inject(Router);
 
   games = signal<BaseGameModel[]>([]);
+  loading = signal<boolean>(false);
 
   ngOnInit(): void {
+    this.loading.set(true);
     this.loadGames();
   }
 
@@ -24,17 +26,26 @@ export class Games {
     this.gameService.getUserGames().subscribe({
       next: (games) => {
         this.games.set(games);
+        this.loading.set(false);
       },
-      error: (err) => console.error('Error loading games:', err),
+      error: () => {
+        console.error('Error loading games:');
+        this.loading.set(false);
+      },
     });
   }
 
   createGame() {
+    this.loading.set(true);
     this.gameService.createGame().subscribe({
       next: (game) => {
         this.games.update((games) => [...games, game]);
+        this.loading.set(false);
       },
-      error: (err) => console.error('Error creating game:', err),
+      error: () => {
+        console.error('Error creating game:');
+        this.loading.set(false);
+      },
     });
   }
 }
