@@ -274,7 +274,6 @@ public class GameService : IGameService
         var gameCardStates = game.GameCardStates
             .Where(gs => gs.Location == location)
             .OrderBy(gs => gs.Order);
-
         if (amount.HasValue)
         {
             return gameCardStates.Take(amount.Value).ToList();
