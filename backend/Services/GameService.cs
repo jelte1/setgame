@@ -38,7 +38,7 @@ public class GameService : IGameService
         var game = new Game
         {
             UserId = userId,
-            CreatedAt = DateTime.Now
+            CreatedAt = DateTime.UtcNow
         };
         await _gamesRepository.AddAsync(game);
         await _gamesRepository.SaveChangesAsync();
