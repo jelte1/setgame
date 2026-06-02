@@ -7,14 +7,14 @@ import { CardLocation } from '../../../../core/models/gameCardState.model';
 import { Board } from '../board/board';
 import { CardModel } from '../../../../core/models/card.model';
 import { SET_SIZE } from '../../../../core/constants/constants';
-import { RefactorDatePipe } from '../../../../core/pipes/refactorDate.pipe';
 import { CheckSetModel } from '../../../../core/models/checkSet.model';
 import { FoundSets } from '../found-sets/found-sets';
+import { Statistics } from '../statistics/statistics';
 
 @Component({
   selector: 'app-game',
   standalone: true,
-  imports: [Board, RouterLink, RefactorDatePipe, FoundSets],
+  imports: [Board, RouterLink, FoundSets, Statistics],
   templateUrl: './game.html',
   styleUrl: './game.css',
 })

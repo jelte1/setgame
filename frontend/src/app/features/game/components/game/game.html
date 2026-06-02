@@ -7,39 +7,8 @@
         <h2>Game Details</h2>
         <button [routerLink]="['/games']">Back to overview</button>
       </div>
-      <div class="stats">
-        <div class="stat">
-          <span class="label">Created at</span>
-          <span class="value">{{ currentGame.createdAt | refactorDate }}</span>
-        </div>
 
-        <div class="stat">
-          <span class="label">Sets found</span>
-          <span class="value">{{ currentGame.foundSets.length }}</span>
-        </div>
-
-        <div class="stat">
-          <span class="label">Possible sets in table board</span>
-          <span class="value">{{ currentGame.possibleSetsCount }}</span>
-        </div>
-
-        <div class="stat">
-          <span class="label">Remaining cards in backlog deck</span>
-          <span class="value">{{ cardsInDeck().length }}</span>
-        </div>
-
-        <div class="stat">
-          <span class="label">Cards on the table</span>
-          <span class="value">{{ tableCards().length }}</span>
-        </div>
-
-        <div class="stat">
-          <span class="label">Is game finished?</span>
-          <span class="value">
-            {{ currentGame.isFinished ? 'Yes' : 'No' }}
-          </span>
-        </div>
-      </div>
+      <app-statistics [game]="currentGame" [tableCards]="tableCards().length" [cardsInDeck]="cardsInDeck().length"/>
 
       <button class="showHint" (click)="showHint()">Get a Hint!</button>
 
